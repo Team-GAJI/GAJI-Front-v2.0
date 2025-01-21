@@ -1,0 +1,50 @@
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeo-Variable.woff") format("truetype");
+}
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeoTTF-aLt.woff") format("woff2");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeoTTF-bRg.woff") format("woff2");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeoTTF-cBd.woff") format("woff2");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeoTTF-dEb.woff") format("woff2");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "NanumSquareNeo";
+  src: url("./assets/font/NanumSquareNeoTTF-eHv.woff") format("woff2");
+  font-weight: 900;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow-x: hidden;
+  font-family: "NanumSquareNeo";
+  background-color: #fbfaff;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8x;
+    background: none;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    border-radius: 30px;
+    background-color: rgb(142, 89, 255, 0.5);
+  }
+}
