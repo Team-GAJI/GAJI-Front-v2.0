@@ -69,10 +69,10 @@ const StudyManageWeekPeriod = ({
   };
 
   return (
-    <>
-      <Container>
-        <MainText>{selectedWeek + 1}주차 스터디 관리</MainText>
-      </Container>
+    
+    <Container>
+        <MainText>{selectedWeek + 1}주차 스터디 기한</MainText>
+      {/* </Container> */}
 
       <ComponentWrapper>
         {isStudyPeriodActive && (
@@ -108,7 +108,7 @@ const StudyManageWeekPeriod = ({
           </ContentWrapper>
         </RightWrapper>
       </ComponentWrapper>
-    </>
+    </Container>
   );
 };
 
@@ -120,6 +120,7 @@ const ComponentWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+
 `;
 
 const RightWrapper = styled.div`
@@ -181,25 +182,32 @@ const Period = styled.div`
 `;
 
 const MainText = styled.div`
-  color: #8e59ff;
+  // color: #8e59ff;
+  // font-size: 1.25em;
+  // font-weight: 800;
+  // text-align: left;
+  // margin-left: -22.5em;
+  // @media (max-width: 768px) {
+  //   font-size: 1.1em;
+  //   margin-left: -27em;
+  // }
+    color: #8e59ff;
   font-size: 1.25em;
   font-weight: 800;
-  text-align: left;
-  margin-left: -22.5em;
-  @media (max-width: 768px) {
-    font-size: 1.1em;
-    margin-left: -27em;
-  }
 `;
 const Container = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.625em;
+  // display: flex;
+  // flex-direction: column;
+  gap: 0.625em;
   margin: 1em 0;
-  @media (max-width: 786px) {
-    align-items: center;
-    margin-left: 2em; /* 이거 확인*/
-  }
+  // @media (max-width: 786px) {
+  //   align-items: center;
+  //   margin-left: 2em; /* 이거 확인*/
+  // }
 `;
 const ContentWrapper = styled.div`
   margin: 3.5em 0 3.5em 0em;
