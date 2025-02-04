@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Color } from "../../../components/container/Color";
 import { PuppleButton, PuppleButton2 } from "../../../components/button/Button";
 import defaultProfileImage from "../../../assets/images/mypage/userProfile.png";
-import { nickNameAPI } from "../../login/api/nickNameAPI";
+import { getNickNameAPI } from "../api/getNickNameAPI";
 
 const UserInfo = forwardRef(({ userInfo }, ref) => {
   console.log(userInfo);
@@ -20,7 +20,7 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
       }
 
       try {
-        const response = await nickNameAPI(userInfo.nickname);
+        const response = await getNickNameAPI(userInfo.nickname);
         alert(response.message || "닉네임이 수정되었습니다!");
       } catch (error) {
         console.error("닉네임 수정 중 오류 발생:", error);
@@ -58,14 +58,14 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
             <UserName>{userInfo?.nickname} 님</UserName>
           )}
           <UserGrade>
-            {userInfo?.email ? userInfo?.email : "이메일 서버 API 요청 필요"}
+            {userInfo?.email ? userInfo?.email : "이메일 API 필요"}
           </UserGrade>
           <WelcomeText>마이페이지에 오신 것을 환영합니다!</WelcomeText>
         </ColumnWrapper>
       </RowWrapper2>
       <ColumnWrapper>
         <NameEditButton onClick={toggleEditingMode}>
-          {isEditing ? "닉네임 수정완료" : "닉네임 수정하기"}
+          {isEditing ? "수정 완료" : "닉네임 수정"}
         </NameEditButton>
       </ColumnWrapper>
     </UserWrapper>
@@ -169,17 +169,6 @@ const NameEditButton = styled(PuppleButton2)`
 
   @media (max-width: 768px) {
     height: 35px;
-  }
-`;
-
-const GreyText = styled.div`
-  text-align: center;
-  font-size: 0.6875em;
-  color: #c9c7da;
-  font-weight: 700;
-
-  @media (max-width: 768px) {
-    font-size: 0.625em;
   }
 `;
 

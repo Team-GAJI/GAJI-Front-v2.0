@@ -37,9 +37,10 @@ export const LoginButton = styled.div`
   gap: 21px;
   width: 342px;
   height: 43px;
-  background-color: #ffffff;
+  background-color: ${(props) =>
+    props.backgroundColor ? props.backgroundColor : "#ffffff"};
   border-radius: 10px;
-  border: 0.5px solid #000000;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
   font-weight: 600;
   cursor: pointer;
 `;
