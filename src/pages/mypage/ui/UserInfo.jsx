@@ -1,13 +1,7 @@
-import React, { forwardRef, useState, useEffect, useMemo } from "react";
+import React, { forwardRef, useState, useMemo } from "react";
 import styled from "styled-components";
-// import BellIcon from '../../../assets/icons/common/bellicon.svg?react';
-import SendIcon from "../../../assets/icons/mypage/sendicon.svg?react";
 import { Color } from "../../../components/container/Color";
-import {
-  PuppleButton,
-  PuppleButton2,
-  PuppleButton3,
-} from "../../../components/button/Button";
+import { PuppleButton, PuppleButton2 } from "../../../components/button/Button";
 import defaultProfileImage from "../../../assets/images/mypage/userProfile.png";
 import { nickNameAPI } from "../../login/api/nickNameAPI";
 
@@ -63,7 +57,9 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
           ) : (
             <UserName>{userInfo?.nickname} 님</UserName>
           )}
-          <UserGrade>{userInfo?.userGrade} Member</UserGrade>
+          <UserGrade>
+            {userInfo?.email ? userInfo?.email : "이메일 서버 API 요청 필요"}
+          </UserGrade>
           <WelcomeText>마이페이지에 오신 것을 환영합니다!</WelcomeText>
         </ColumnWrapper>
       </RowWrapper2>
@@ -71,18 +67,6 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
         <NameEditButton onClick={toggleEditingMode}>
           {isEditing ? "닉네임 수정완료" : "닉네임 수정하기"}
         </NameEditButton>
-        <RowWrapper3>
-          <IconWithText
-            // icon={<BellIcon />}
-            text="마케팅 수신"
-            onClick={() => alert("마케팅 수신 설정이 변경되었습니다.")}
-          />
-          <IconWithText
-            icon={<SendIcon />}
-            text="쪽지 보내기"
-            onClick={() => alert("준비중인 기능입니다.")}
-          />
-        </RowWrapper3>
       </ColumnWrapper>
     </UserWrapper>
   );
@@ -91,16 +75,6 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
 UserInfo.displayName = "UserInfo";
 
 export default UserInfo;
-
-// 재사용 가능한 컴포넌트로 아이콘과 텍스트를 묶음
-const IconWithText = ({ icon, text, onClick }) => (
-  <ColumnWrapper2 onClick={onClick}>
-    <MarketingButton>{icon}</MarketingButton>
-    <GreyText>{text}</GreyText>
-  </ColumnWrapper2>
-);
-
-// 스타일 정의
 
 const RowWrapper2 = styled.div`
   display: flex;
@@ -115,19 +89,6 @@ const RowWrapper2 = styled.div`
   }
 `;
 
-const RowWrapper3 = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 188px;
-  height: auto;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    justify-content: space-between;
-    gap: 1em;
-  }
-`;
-
 const ColumnWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -138,10 +99,6 @@ const ColumnWrapper = styled.div`
     align-items: center;
     gap: 1em;
   }
-`;
-
-const ColumnWrapper2 = styled(ColumnWrapper)`
-  gap: 0.5em;
 `;
 
 const UserImage = styled.div`
@@ -211,16 +168,6 @@ const NameEditButton = styled(PuppleButton2)`
   font-weight: 700;
 
   @media (max-width: 768px) {
-    height: 35px;
-  }
-`;
-
-const MarketingButton = styled(PuppleButton3)`
-  width: 90px;
-  height: 40px;
-
-  @media (max-width: 768px) {
-    width: 80px;
     height: 35px;
   }
 `;
