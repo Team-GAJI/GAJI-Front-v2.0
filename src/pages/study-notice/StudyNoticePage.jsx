@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import Notices from "../study-room/ui/Notices";
+import Notices from "./ui/Notices";
 import PageHeader from "../../components/common/PageHeader";
 import { ContentWrapper60 } from "../../components/common/MediaWrapper";
 import { studyNoticeAPI } from "../study-room/api/studyNoticeAPI"; // API 모듈에서 함수 임포트

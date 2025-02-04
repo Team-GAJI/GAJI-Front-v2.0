@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import NoticeAlarm from "../../../assets/icons/noticeRoom/NoticeAlarm.png";
 import userProfile from "../../../assets/images/community/userProfile.png";
-import CheckTooltip from "./CheckTooltip";
+import CheckTooltip from "../../study-room/ui/CheckTooltip";
 
 const NoticeSquare = ({
   notice,

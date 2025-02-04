@@ -197,11 +197,6 @@ const StudyCurriculumDescreption = styled.div`
   line-height: 1.2em;
 `;
 
-const ButtonWrapper = styled.div`
-  width: auto;
-  position: relative;
-`;
-
 const NinckNameList = styled.div`
   width: 100%;
   overflow-x: auto;
