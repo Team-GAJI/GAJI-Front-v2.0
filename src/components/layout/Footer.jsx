@@ -13,9 +13,6 @@ const Footer = () => {
         <Text onClick={() => navigate("/")}>홈</Text>
         <Text onClick={() => navigate("/study")}>스터디</Text>
         <Text onClick={() => navigate("/community")}>커뮤니티</Text>
-        <Text onClick={() => navigate("/")}>로드맵</Text>
-        <Text onClick={() => navigate("/")}>강의</Text>
-        <Text onClick={() => navigate("/mypage")}>마이페이지</Text>
       </RowWrapper>
       <RowLogoWrapper>
         <StyledLogo />
@@ -23,7 +20,7 @@ const Footer = () => {
           가지고 싶은 스터디, <Color>GAJI</Color>
         </LogoText>
       </RowLogoWrapper>
-      <FooterText>@ Copyright 2024_GAJI</FooterText>
+      <FooterText>@ Copyright 2025_52</FooterText>
     </FooterWrapper>
   );
 };

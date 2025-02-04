@@ -11,38 +11,17 @@ import { PuppleButton } from "../../components/button/Button";
 
 const LoginPage = () => {
   const theme = ThemeContext;
-  const [register, setRegister] = useState(false);
-  const [isAgreed, setIsAgreed] = useState(false); // 첫 번째 체크박스 상태 관리
   const [modal, setModal] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
-    // const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
-    // window.location.href = naverLoginUrl;
-  };
+  // const handleGoogleLogin = async () => {
+  //   alert("준비중입니다.");
+  // };
 
   const handleKakaoLogin = () => {
-    // const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
-    // window.location.href = naverLoginUrl;
-  };
-
-  const handleGoogleRegister = () => {
-    if (isAgreed) {
-      console.log("로그인 시작");
-      handleGoogleLogin();
-    } else {
-      alert("필수 약관에 동의해야 합니다.");
-    }
-  };
-
-  const handleNaverRegister = () => {
-    if (isAgreed) {
-      console.log("로그인 시작");
-      handleNaverLogin();
-    } else {
-      alert("필수 약관에 동의해야 합니다.");
-    }
+    const kakaoLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/kakao`;
+    window.location.href = kakaoLoginUrl;
   };
 
   const submitNickname = () => {
@@ -73,48 +52,18 @@ const LoginPage = () => {
       <Title>
         가지고 싶은 스터디, <Color>GAJI</Color>
       </Title>
-      {register ? (
-        <ColumnWrapper>
-          <RowWrapper>
-            <RowWrapper>
-              <Radio
-                checked={isAgreed}
-                onChange={(e) => setIsAgreed(e.target.checked)}
-              />
-              <Text2>개인정보 수집 및 이용에 동의합니다(필수)</Text2>
-            </RowWrapper>
-            <Text3>약관보기</Text3>
-          </RowWrapper>
-          <RowWrapper>
-            <RowWrapper>
-              <Radio />
-              <Text2>마케팅 수신에 동의합니다(선택)</Text2>
-            </RowWrapper>
-            <Text3>약관보기</Text3>
-          </RowWrapper>
-          <Padding />
-          <LoginButton onClick={handleKakaoRegister} disabled={!isAgreed}>
-            카카오로 회원가입하기
-          </LoginButton>
-          <LoginButton onClick={handleGoogleRegister} disabled={!isAgreed}>
-            <GoogleLogo />
-            구글로 회원가입하기
-          </LoginButton>
-        </ColumnWrapper>
-      ) : (
-        <ColumnWrapper>
-          <LoginButton backgroundColor="#FEE500" onClick={handleKakaoLogin}>
-            <KakaoLogo />
-            카카오로 로그인하기
-          </LoginButton>
-          <LoginButton onClick={handleGoogleLogin}>
-            <GoogleLogo />
-            구글로 로그인하기
-          </LoginButton>
-          <Text onClick={() => setRegister(true)}>회원가입하기</Text>
-        </ColumnWrapper>
-      )}
-      <LoginFooter>@ Copyright 2024_GAJI</LoginFooter>
+      <ColumnWrapper>
+        <LoginButton backgroundColor="#FEE500" onClick={handleKakaoLogin}>
+          <KakaoLogo />
+          카카오로 시작하기
+        </LoginButton>
+        {/* <LoginButton onClick={handleGoogleLogin}>
+          <GoogleLogo />
+          구글로 로그인하기
+        </LoginButton> */}
+      </ColumnWrapper>
+
+      <LoginFooter>@ Copyright 2025_52</LoginFooter>
     </LoginWrapper>
   );
 };
