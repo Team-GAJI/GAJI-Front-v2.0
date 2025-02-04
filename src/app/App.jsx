@@ -21,13 +21,14 @@ import StudyRoomPage from "../pages/study-room/StudyRoomPage";
 import CommunityPage from "../pages/community/CommunityPage";
 import CommunityDetailPage from "../pages/community-detail/CommunityDetailPage";
 import CommunityWritePage from "../pages/community-write/CommunityWritePage";
+import KakaoRedirect from "../pages/login/KakaoRedirect";
 
 function App() {
   return (
     <Routes>
       {/* 로그인 페이지 라우트 */}
       <Route exact path="/login" element={<LoginPage />} />
-
+      <Route exact path="/redirect" element={<KakaoRedirect />} />
       {/* 메인 레이아웃이 적용되는 라우트 그룹 */}
       <Route element={<MainLayOut />}>
         {/* 모든 하위 라우트에 메인 레이아웃이 적용됩니다 */}

@@ -30,9 +30,6 @@ const MyPage = () => {
       case "studyroom":
         ref = studyRoomRef;
         break;
-      case "calendar":
-        ref = calendarRef;
-        break;
       case "mypost":
         ref = myPostRef;
         break;
@@ -69,11 +66,14 @@ const MyPage = () => {
     });
   };
 
-  // useEffect(() => {
-  //   if (!localStorage.getItem("accessToken")) {
-  //     navigate("/");
-  //   }
-  // });
+  useEffect(() => {
+    if (
+      !localStorage.getItem("accessToken") ||
+      !localStorage.getItem("userId")
+    ) {
+      navigate("/");
+    }
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
