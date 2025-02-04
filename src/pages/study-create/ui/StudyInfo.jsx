@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import ThumbNailImg from "../../../assets/images/studyDetail/thumbNailImg.png";
+// import ThumbNailImg from "../../../assets/images/studyDetail/thumbNailImg.png";
+import GrayLogo from "../../../assets/icons/common/grayLogo.svg?react";
 import StudyData from "./StudyData";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -86,6 +87,14 @@ const StudyInfo = () => {
     dispatch(setPrivate(false));
   };
 
+  // 글자 수 오류 방지 함수
+  const handleOnInput = (e, maxlength) => {
+    const {
+      target: { value },
+    } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <ComponentWrapper>
       {/* 카테고리, 인원수 영역 */}
@@ -117,6 +126,7 @@ const StudyInfo = () => {
             value={name}
             placeholder="스터디 명을 입력해주세요"
             maxLength="20"
+            onInput={(e) => handleOnInput(e, 20)}
           />
           <TextLength lengthCount={lengthCount}>{lengthCount}/20 자</TextLength>
         </InputWrapper>
@@ -141,7 +151,9 @@ const StudyInfo = () => {
             <ImageText>파일 형식: jpg, png</ImageText>
           </ImageWrapper>
           {/* 미리보기 */}
-          <PreivewWrapper isImgFile={imgFile}></PreivewWrapper>
+          <PreivewWrapper isImgFile={imgFile}>
+            <StyledGrayLogo isImgFile={imgFile} />
+          </PreivewWrapper>
         </UploadWrapper>
       </ThumbNailWrapper>
 
@@ -277,7 +289,6 @@ const TitleInput = styled.input`
 
 const TextLength = styled.div`
   width: 10%;
-
   font-size: 0.9em;
   font-weight: bold;
   text-align: end;
@@ -365,12 +376,21 @@ const PreivewWrapper = styled.div`
   border-radius: 10px;
   width: 40%;
   height: 11.625em;
-  background-image: url(${(props) =>
-    props.isImgFile ? props.isImgFile : ThumbNailImg});
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f4f8;
+  background-image: ${(props) =>
+    props.isImgFile ? `url(${props.isImgFile}` : "none"});
   background-size: cover;
   @media (max-width: 768px) {
     width: 100%;
   }
+`;
+
+const StyledGrayLogo = styled(GrayLogo)`
+  width: 2rem;
+  display: ${(props) => (props.isImgFile ? "none" : "flex")};
 `;
 
 const ToggleWrapper = styled.div`
