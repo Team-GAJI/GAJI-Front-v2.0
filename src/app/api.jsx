@@ -17,13 +17,6 @@ export const api = axios.create({
   },
 });
 
-export const api2 = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_SERVER_URL_API,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 // 요청 인터셉터를 사용해 매 요청마다 Authorization 헤더에 토큰 추가
 api.interceptors.request.use(
   (config) => {
