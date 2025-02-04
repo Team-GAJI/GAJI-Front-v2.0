@@ -4,10 +4,14 @@ import WeekCurriculum from "../study-room/ui/WeekCurriculum";
 import { useNavigate, useLocation } from "react-router-dom";
 import MobileManageButton from "../../components/common/MobileManageButton";
 import SideBar from "./ui/SideBar";
-import FirstNoticeSquare from "./ui/FirstNoticeSquare";
+import backGroundUrl from "../../assets/images/mypage/mypageBackground.png";
+import { useEffect } from "react";
+import { studyFirstNoticeAPI } from "./api/studyNoticeAPI";
+import FirstNoticeSquare2 from "./ui/FirstNoticeSquare2";
 
 const StudyRoomPage = () => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  const [firstNotice, setFirstNotice] = useState();
 
   const location = useLocation();
   const data = location.state?.data || {};
@@ -34,9 +38,15 @@ const StudyRoomPage = () => {
   const weekCount = calculateWeeks(studyInfo.startDay, studyInfo.endDay);
   const [currentWeek, setCurrentWeek] = useState(weekCount);
 
+  useEffect(() => {
+    const noticeData = studyFirstNoticeAPI(roomId);
+    if (noticeData) setFirstNotice(noticeData);
+  }, []);
   return (
     <>
-      <div>{studyInfo.name}</div>
+      <Header>
+        <StudyName>{studyInfo.name}</StudyName>
+      </Header>
       <SideBar
         studyInfo={studyInfo}
         roomId={roomId}
@@ -45,7 +55,7 @@ const StudyRoomPage = () => {
       />
       <ContentWrapper>
         <MainContent>
-          <FirstNoticeSquare />
+          <FirstNoticeSquare2 notice={firstNotice} />
           <WeekCurriculum
             studyInfo={studyInfo}
             roomId={roomId}
@@ -88,4 +98,28 @@ const MainContent = styled.div`
   color: #000;
   display: flex;
   flex-direction: column;
+`;
+
+const StudyName = styled.p`
+  font-size: 2em;
+  color: #8e59ff;
+  font-weight: 800;
+  width: 100%;
+  text-align: center;
+`;
+
+const Header = styled.div`
+  display: flex;
+  z-index: 2;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 10em;
+  gap: 1em;
+  background-color: #fbfaff;
+  background-image: url(${backGroundUrl});
+  @media (max-width: 768px) {
+    margin-bottom: ${({ $large }) => ($large ? "3em" : "0em")};
+  }
 `;
