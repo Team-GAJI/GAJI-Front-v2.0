@@ -38,6 +38,11 @@ const ManageWeekBasics = ({
     onWeekDataChange("description", value);
   };
 
+  const handleOnInput = (e, maxlength) => {
+    const { target: { value }, } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <Container>
       <Text2>{selectedWeek + 1}주차 스터디 관리</Text2>
@@ -47,8 +52,13 @@ const ManageWeekBasics = ({
             placeholder={`${selectedWeek + 1} 주차 제목을 입력해주세요.`}
             value={studyName}
             onChange={handleStudyNameChange}
+            maxLength="30"
+            onInput={(e) => handleOnInput(e, 30)}
+
           />
-          <CharCount>{(studyName || "").length}/30</CharCount>
+          <CharCount  studyName={(studyName || "").length}>
+            {(studyName || "").length}/30
+          </CharCount>
         </InputWrapper>
         <DivisionLine2 />
         <RowContainer>
@@ -59,9 +69,11 @@ const ManageWeekBasics = ({
                 placeholder="설명을 입력해주세요"
                 value={studyDescription}
                 onChange={handleStudyDescriptionChange}
+                maxLength="20000"
+                onInput={(e) => handleOnInput(e, 20000)}
               />
-              <ExStudyCharCount>
-                {(studyDescription || "").length}/200
+              <ExStudyCharCount studyDescription={(studyDescription || "").length}>
+                {(studyDescription || "").length}/20000
               </ExStudyCharCount>
             </ExWrapper>
           </Container>
@@ -129,11 +141,12 @@ const CharCount = styled.span`
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: #a2a3b2;
+  color: ${(props) => (props.studyName >= 30 ? "red" : "#A2A3B2")};
   font-size: 0.8125em;
   font-weight: 700;
   text-align: right;
   right: 0em;
+
 `;
 
 const DivisionLine2 = styled.div`
@@ -149,7 +162,7 @@ const ExWrapper = styled.div`
   border: 1px solid #a2a3b2;
   border-radius: 0.5em;
   width: 100%;
-  height: 14.375em;
+  // height: 14.375em;
   padding: 1.5em;
   box-sizing: border-box;
 `;
@@ -166,11 +179,27 @@ const Text4 = styled.p`
 const InputExStudy = styled.textarea`
   background: none;
   border: none;
+  
   outline: none;
   resize: none;
   font-size: 1em;
   width: 100%;
+  // height: 14.375em;
+  height : 200px;
+
   font-family: "NanumSquareNeo";
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+    background: none;
+    width : 8px;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    // width: 0.2px;
+    border-radius: 30px;
+    background-color: rgb(142, 89, 255, 0.5);
+  }
+
   &::placeholder {
     color: #a2a3b2;
     font-size: 0.8125em;
@@ -180,69 +209,10 @@ const InputExStudy = styled.textarea`
 
 const ExStudyCharCount = styled.span`
   display: block;
-  color: #a2a3b2;
+  color: ${(props) => (props.studyDescription >= 20000 ? "red" : "#A2A3B2")};
   font-size: 0.8125em;
   font-weight: 700;
   text-align: right;
   margin-right: 0.625em;
-  margin-top: 10.75em;
-`;
-
-const ToggleWrapper = styled.div`
-  margin-top: 2em;
-  display: flex;
-  align-items: center;
-`;
-
-const OnToggleText = styled.div`
-  color: ${(props) => (props.isOn ? "#8E59FF" : "#A2A3B2")};
-  font-size: 0.9em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-`;
-
-const OffToggleText = styled.div`
-  color: ${(props) => (props.isOn ? "#A2A3B2" : "#8E59FF")};
-  font-size: 0.9em;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-`;
-
-const ToggleBox = styled.div`
-  margin: 0 0.8em;
-  border: 1.5px solid #8e59ff;
-  border-radius: 10px;
-  width: 3.5em;
-  height: 1.4375em;
-  display: flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-`;
-
-const Toggle = styled.div`
-  border-radius: 30px;
-  width: 1em;
-  height: 1em;
-  background-color: #8e59ff;
-  position: absolute;
-  left: ${(props) => (props.isOn ? "0.2em" : "2.2em")};
-  transition: all 0.3s ease-out;
-`;
-
-const SaveButton = styled.button`
-  padding: 10px 20px;
-  background-color: #4caf50; // Green background
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-
-  &:hover {
-    background-color: #45a049; // Darker green on hover
-  }
+  margin-top: 1em;
 `;

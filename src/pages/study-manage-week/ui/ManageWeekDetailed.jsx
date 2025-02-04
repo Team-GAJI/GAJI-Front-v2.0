@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import Delete from "../../../assets/icons/studyManageWeek/StudyManageWeekDelete.png";
+
 const ManageWeekeDetailed = forwardRef(
   ({ selectedWeek, weekData = [], onWeekDataChange }, ref) => {
     const [inputs, setInputs] = useState([""]);
@@ -142,7 +143,7 @@ const Icons = styled.img`
   top: 50%;
   right: 0.75em;
   transform: translateY(-50%);
-  width: 0.9em;
+  width: 1em;
   height: auto;
   cursor: pointer;
 `;

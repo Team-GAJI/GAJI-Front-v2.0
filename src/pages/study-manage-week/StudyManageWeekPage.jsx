@@ -37,7 +37,7 @@ const StudyManageWeekPage = () => {
 
   const location = useLocation();
   const roomId = location.state?.roomId;
-  const weekCount = location.state?.week;
+  const weekCount = location.state?.week; //주차 받아오기
   console.log(roomId);
 
   useEffect(() => {
@@ -74,6 +74,7 @@ const StudyManageWeekPage = () => {
 
   const handleSave = useCallback(async () => {
     const currentWeekData = weeksData[selectedWeek];
+    alert("저장완료");
     if (!currentWeekData) {
       console.error("현재 주차 데이터가 없습니다.");
       return;
@@ -179,9 +180,10 @@ const StudyManageWeekPage = () => {
   };
 
   //사이드 버튼 주차 관련 코드들
-  const handleButtonClick = () => {
-    navigate("/study/manage");
-  };
+  // const handleButtonClick = () => {
+  //   navigate("/study/manage");
+  // };
+
   const handleWeekSelect = (index) => {
     setSelectedWeek(index);
     console.log("주차 선택:", index);
@@ -257,9 +259,9 @@ const StudyManageWeekPage = () => {
           />
         </ContentWrapper70>
         <Sidebar1 ref={sidebarRef}>
-          <BasicInfoButton onClick={() => navigate("/study/manage")}>
+          {/* <BasicInfoButton onClick={() => navigate("/study/manage")}>
             기본정보
-          </BasicInfoButton>
+          </BasicInfoButton> */}
           {weeks.map((week, index) => (
             <React.Fragment key={week}>
               <SidebarButton1
@@ -328,6 +330,18 @@ const Sidebar1 = styled.aside`
   top: 5em;
   margin-top: 4.75em;
 
+  //스크롤 
+  &::-webkit-scrollbar {
+    height: 8px;
+    background: none;
+    width : 8px;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    // width: 0.2px;
+    border-radius: 30px;
+    background-color: rgb(142, 89, 255, 0.5);
+  }
+    
   @media (max-width: 768px) {
     position: -webkit-sticky;
     position: sticky;
