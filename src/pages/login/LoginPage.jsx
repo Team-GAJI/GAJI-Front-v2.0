@@ -6,7 +6,6 @@ import { Color } from "../../components/container/Color";
 import { LoginButton } from "../../components/button/Button";
 //import GoogleLogo from "../../assets/icons/login/googlelogo.svg?react";
 import KakaoLogo from "../../assets/icons/login/kakaoIcon.svg?react";
-import { useNavigate } from "react-router-dom";
 //import { PuppleButton } from "../../components/button/Button";
 
 const LoginPage = () => {
