@@ -38,6 +38,11 @@ const ManageWeekBasics = ({
     onWeekDataChange("description", value);
   };
 
+  const handleOnInput = (e, maxlength) => {
+    const { target: { value }, } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <Container>
       <Text2>{selectedWeek + 1}주차 스터디 관리</Text2>
@@ -48,6 +53,8 @@ const ManageWeekBasics = ({
             value={studyName}
             onChange={handleStudyNameChange}
             maxLength="30"
+            onInput={(e) => handleOnInput(e, 30)}
+
           />
           <CharCount  studyName={(studyName || "").length}>
             {(studyName || "").length}/30
@@ -63,7 +70,7 @@ const ManageWeekBasics = ({
                 value={studyDescription}
                 onChange={handleStudyDescriptionChange}
                 maxLength="20000"
-                
+                onInput={(e) => handleOnInput(e, 20000)}
               />
               <ExStudyCharCount studyDescription={(studyDescription || "").length}>
                 {(studyDescription || "").length}/20000
