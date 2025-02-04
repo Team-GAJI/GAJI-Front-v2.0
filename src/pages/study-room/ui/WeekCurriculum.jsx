@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { MinorText } from "./StudySummary";
 import { weekTaskProgressAPI } from "../api/weekTaskProgressAPI";
 
 const WeekCurriculum = ({ studyInfo, roomId, week }) => {
@@ -92,7 +91,7 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
 
       <TaskContainer>
         <CurrentWeek>
-          <MinorText>이번주 과제</MinorText>
+          <p>이번주 과제</p>
           <TaskSquare>
             <TaskList>
               <TaskItem isActive={activeTask1} onClick={() => handleTask1()}>
@@ -109,7 +108,7 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
         </CurrentWeek>
 
         <MyTask>
-          <MinorText>내 과제</MinorText>
+          <p>내 과제</p>
           <MyStudyData>
             <MyLeftSide>
               <Column>
@@ -130,7 +129,7 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
         </MyTask>
       </TaskContainer>
 
-      <MinorText>스터디원 달성도</MinorText>
+      <p>스터디원 달성도</p>
       <CircleContainer>
         <NinckNameList>
           {nicknames.map((nickname, index) => (
