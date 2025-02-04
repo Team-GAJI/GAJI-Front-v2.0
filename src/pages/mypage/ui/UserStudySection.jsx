@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Scroll } from "../../../components/common/Scroll";
 import { Color } from "../../../components/container/Color";
-import studyProfileUrl from "../../../assets/images/common/studyExampleImage.png";
+//import studyProfileUrl from "../../../assets/images/common/studyExampleImage.png";
 
 const UserStudySection = ({ title, studyList, handleStudyRoom }) => (
   <SectionWrapper>
@@ -117,18 +117,18 @@ const StudyDate = styled.div`
   color: #a2a3b2;
 `;
 
-const StudyProfile = styled.img`
-  width: 3em;
-  height: 3em;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 0.5em;
+// const StudyProfile = styled.img`
+//   width: 3em;
+//   height: 3em;
+//   object-fit: cover;
+//   border-radius: 5px;
+//   margin-bottom: 0.5em;
 
-  @media (max-width: 768px) {
-    width: 5em;
-    height: 5em;
-  }
-`;
+//   @media (max-width: 768px) {
+//     width: 5em;
+//     height: 5em;
+//   }
+// `;
 
 const NoDataText = styled.div`
   font-size: 1em;
