@@ -1,6 +1,6 @@
 import { api } from "../../../app/api";
 
-export const nickNameAPI = async (nickName) => {
+export const getNickNameAPI = async (nickName) => {
   try {
     const userId = localStorage.getItem("userId");
     const response = await api.put(`users/nicknames/${userId}`, {

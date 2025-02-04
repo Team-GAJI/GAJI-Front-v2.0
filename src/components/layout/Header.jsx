@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MenuIcon from "../../assets/icons/common/menuBar.svg?react";
 import { useNavigate } from "react-router-dom";
@@ -6,16 +6,14 @@ import userProfileUrl from "../../assets/images/common/userProfile.png";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("accessToken"),
-  );
+  const [isAccessToken, setIsAccessToken] = useState();
   const [menuVisible, setMenuVisible] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userId");
+    window.location.reload();
     setAccessToken(null);
-    navigate("/");
   };
 
   const toggleMenu = () => {
@@ -23,6 +21,12 @@ const Header = () => {
     const timer = setTimeout(() => setMenuVisible(false), 3000);
     return () => clearTimeout(timer); // 3초후 자동으로 취소
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      setIsAccessToken(true);
+    }
+  }, []);
 
   return (
     <HeaderWrapper>
@@ -37,7 +41,7 @@ const Header = () => {
           <Text onClick={() => navigate("/community")}>커뮤니티</Text>
         </MenuWrapper>
       </RowWrapper>
-      {accessToken ? (
+      {isAccessToken ? (
         <>
           <MyPageButton onClick={() => navigate("/mypage")} />
           <AuthButton onClick={handleLogout}>LOG OUT</AuthButton>
