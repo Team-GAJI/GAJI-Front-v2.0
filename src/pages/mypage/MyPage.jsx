@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import UserCalendar from "./ui/UserCalendar";
 import UserPost from "./ui/UserPost";
 import UserStudyList from "./ui/UserStudyList";
 import UserInfo from "./ui/UserInfo";
@@ -70,11 +69,11 @@ const MyPage = () => {
     });
   };
 
-  useEffect(() => {
-    if (!localStorage.getItem("accessToken")) {
-      navigate("/");
-    }
-  });
+  // useEffect(() => {
+  //   if (!localStorage.getItem("accessToken")) {
+  //     navigate("/");
+  //   }
+  // });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -123,9 +122,9 @@ const MyPage = () => {
     };
   }, []);
 
-  const headerTitles = ["내 정보", "스터디룸", "일정", "내가 쓴 글"];
+  const headerTitles = ["내 정보", "스터디룸", "내가 쓴 글"];
   const handleHeaderButtonClick = (index) => {
-    const sections = ["home", "studyroom", "calendar", "mypost"];
+    const sections = ["home", "studyroom", "mypost"];
     setActiveButtonIndex(index);
     handleScroll(sections[index]);
   };
@@ -151,9 +150,6 @@ const MyPage = () => {
               endedStudyList={endedStudyList}
             />
           </RowWrapper4>
-          <Div ref={calendarRef}>
-            <UserCalendar />
-          </Div>
           <Div ref={myPostRef}>
             <UserPost nickName={userInfo.nickname} />
           </Div>
