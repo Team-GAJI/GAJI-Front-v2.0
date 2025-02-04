@@ -35,8 +35,6 @@ const Header = () => {
           <Text onClick={() => navigate("/")}>홈</Text>
           <Text onClick={() => navigate("/study")}>스터디</Text>
           <Text onClick={() => navigate("/community")}>커뮤니티</Text>
-          <Text onClick={() => navigate("/")}>로드맵</Text>
-          <Text onClick={() => navigate("/")}>강의</Text>
         </MenuWrapper>
       </RowWrapper>
       {accessToken ? (
