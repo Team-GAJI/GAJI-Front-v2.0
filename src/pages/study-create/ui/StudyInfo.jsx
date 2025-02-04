@@ -86,6 +86,14 @@ const StudyInfo = () => {
     dispatch(setPrivate(false));
   };
 
+  // 글자 수 오류 방지 함수
+  const handleOnInput = (e, maxlength) => {
+    const {
+      target: { value },
+    } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <ComponentWrapper>
       {/* 카테고리, 인원수 영역 */}
@@ -117,6 +125,7 @@ const StudyInfo = () => {
             value={name}
             placeholder="스터디 명을 입력해주세요"
             maxLength="20"
+            onInput={(e) => handleOnInput(e, 20)}
           />
           <TextLength lengthCount={lengthCount}>{lengthCount}/20 자</TextLength>
         </InputWrapper>

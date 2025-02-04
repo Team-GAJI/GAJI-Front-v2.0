@@ -166,6 +166,14 @@ const CommunityWritePost = () => {
     setIsModalOpen(false);
   };
 
+  // 글자 수 오류 방지 함수
+  const handleOnInput = (e, maxlength) => {
+    const {
+      target: { value },
+    } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <Wrapper>
       {/* 제목 */}
@@ -199,10 +207,10 @@ const CommunityWritePost = () => {
         <StyledBoldIcon onClick={() => applyFormatting("**")} />
         <StyledItalicIcon onClick={() => applyFormatting("*")} />
         <StyledThroughIcon onClick={() => applyFormatting("~~")} />
-        <StyledBar>|</StyledBar>
+        {/* <StyledBar>|</StyledBar>
         <FileInputLabel htmlFor="thumbNail">
           <StyledImageIcon />
-        </FileInputLabel>
+        </FileInputLabel> */}
         <ImageUploadInput type="file" id="thumbNail" accept="image/*" />
         <StyledLinkIcon onClick={addLink} />
         <StyledBar>|</StyledBar>
@@ -218,6 +226,7 @@ const CommunityWritePost = () => {
           onKeyDown={handleKeyDown}
           placeholder="게시글의 내용을 입력해주세요."
           maxLength="20000"
+          onInput={(e) => handleOnInput(e, 20000)}
         />
         <TextareaBottom>
           <TextLength lengthCount={lengthCount}>

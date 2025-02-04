@@ -108,6 +108,14 @@ const StudyDetail = () => {
     setIsModalOpen(false);
   };
 
+  // 글자 수 오류 방지 함수
+  const handleOnInput = (e, maxlength) => {
+    const {
+      target: { value },
+    } = e;
+    if (value.length > maxlength) e.target.value = value.substr(0, maxlength);
+  };
+
   return (
     <ComponentWrapper>
       {/* 툴바 */}
@@ -129,11 +137,10 @@ const StudyDetail = () => {
         <StyledBoldIcon onClick={() => applyFormatting("**")} />
         <StyledItalicIcon onClick={() => applyFormatting("*")} />
         <StyledThroughIcon onClick={() => applyFormatting("~~")} />
-        <StyledBar>|</StyledBar>
-        {/* <StyledImageIcon onClick={addImage}/> */}
-        <FileInputLabel htmlFor="contentImg">
+        {/* <StyledBar>|</StyledBar> */}
+        {/* <FileInputLabel htmlFor="contentImg">
           <StyledImageIcon />
-        </FileInputLabel>
+        </FileInputLabel> */}
         <ImageUploadInput type="file" id="contentImg" accept="image/*" />
         <StyledLinkIcon onClick={addLink} />
         <StyledBar>|</StyledBar>
@@ -149,6 +156,7 @@ const StudyDetail = () => {
           onKeyDown={handleKeyDown}
           placeholder="게시글의 내용을 입력해주세요."
           maxLength="20000"
+          onInput={(e) => handleOnInput(e, 20000)}
         />
         <TextareaBottom>
           <TextLength lengthCount={lengthCount}>
