@@ -5,6 +5,7 @@ import Logo from "../../components/common/Logo";
 import { Color } from "../../components/container/Color";
 import { LoginButton } from "../../components/button/Button";
 import GoogleLogo from "../../assets/icons/login/googlelogo.svg?react";
+import KakaoLogo from "../../assets/icons/login/kakaoIcon.svg?react";
 import { useNavigate } from "react-router-dom";
 import { PuppleButton } from "../../components/button/Button";
 
@@ -17,13 +18,13 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
-    const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
-    window.location.href = naverLoginUrl;
+    // const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
+    // window.location.href = naverLoginUrl;
   };
 
-  const handleNaverLogin = () => {
-    const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
-    window.location.href = naverLoginUrl;
+  const handleKakaoLogin = () => {
+    // const naverLoginUrl = `${import.meta.env.VITE_REACT_APP_SERVER_URL}oauth2/authorization/naver`;
+    // window.location.href = naverLoginUrl;
   };
 
   const handleGoogleRegister = () => {
@@ -92,24 +93,23 @@ const LoginPage = () => {
             <Text3>약관보기</Text3>
           </RowWrapper>
           <Padding />
+          <LoginButton onClick={handleKakaoRegister} disabled={!isAgreed}>
+            카카오로 회원가입하기
+          </LoginButton>
           <LoginButton onClick={handleGoogleRegister} disabled={!isAgreed}>
             <GoogleLogo />
             구글로 회원가입하기
           </LoginButton>
-          <LoginButton onClick={handleNaverRegister} disabled={!isAgreed}>
-            <NaverLogo>N</NaverLogo>
-            네이버로 회원가입하기
-          </LoginButton>
         </ColumnWrapper>
       ) : (
         <ColumnWrapper>
+          <LoginButton backgroundColor="#FEE500" onClick={handleKakaoLogin}>
+            <KakaoLogo />
+            카카오로 로그인하기
+          </LoginButton>
           <LoginButton onClick={handleGoogleLogin}>
             <GoogleLogo />
             구글로 로그인하기
-          </LoginButton>
-          <LoginButton onClick={handleNaverLogin}>
-            <NaverLogo>N</NaverLogo>
-            네이버로 로그인하기
           </LoginButton>
           <Text onClick={() => setRegister(true)}>회원가입하기</Text>
         </ColumnWrapper>
@@ -120,11 +120,6 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-const NaverLogo = styled.div`
-  font-weight: 1000;
-  color: #03c75a;
-`;
 
 const LoginWrapper = styled.div`
   background-image: url(${(props) => props.image});
