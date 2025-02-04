@@ -3,7 +3,6 @@ import styled from "styled-components";
 import PageHeader from "../../components/common/PageHeader";
 import StudySummary from "../study-room/ui/StudySummary";
 import WeekCurriculum from "../study-room/ui/WeekCurriculum";
-import StudyPostList from "../study-room/ui/StudyPostList";
 import { useNavigate, useLocation } from "react-router-dom";
 import MobileManageButton from "../../components/common/MobileManageButton";
 import SideBar from "./ui/SideBar";
@@ -79,8 +78,6 @@ const StudyRoomPage = () => {
             roomId={roomId}
             week={currentWeek}
           />
-          <DivisionLine2 />
-          <StudyPostList roomId={roomId} />
         </MainContent>
       </ContentWrapper>
       <div
