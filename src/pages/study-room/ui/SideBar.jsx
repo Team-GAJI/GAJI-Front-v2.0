@@ -24,6 +24,7 @@ const SideBar = ({ roomId, week, setCurrentWeek, studyInfo }) => {
           </React.Fragment>
         ))}
       </SidebarContainer>
+      {/* TODO : 관리자만 관리되도록  */}
       <SidebarManageButton onClick={handleManage}>
         스터디 관리
       </SidebarManageButton>
