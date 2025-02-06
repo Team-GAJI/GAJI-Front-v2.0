@@ -4,10 +4,10 @@ import ReportCheck from "../../../assets/icons/studyDetail/reportCheck.svg?react
 import StudyPostWriterInfo from "./StudyPostWriterInfo";
 import BackgroundImage from "../../../assets/images/community/communityBackground.png";
 import UserProfileImg from "../../../assets/images/community/userProfile.png";
-import BookMarkIcon from "../../../assets/icons/communityPost/postBookMark.svg?react";
+// import BookMarkIcon from "../../../assets/icons/communityPost/postBookMark.svg?react";
 import LikeIcon from "../../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../../assets/icons/communityPost/postReport.svg?react";
-// import ThumbNailImg from "../../../assets/images/studyDetail/thumbNailImg.png";
+import GrayLogo from "../../../assets/icons/common/grayLogo.svg?react";
 import ReportModal from "./ReportModal";
 import { ContentWrapper } from "../../../components/common/MediaWrapper";
 import { studyRecruitAPI } from "../api/studyRecruitAPI";
@@ -121,13 +121,13 @@ const StudyDetailHeader = ({
               <JoinButton onClick={() => handleRecruit()}>
                 스터디 가지기
               </JoinButton>
-              <BookMarkWrapper>
+              {/* <BookMarkWrapper>
                 <StyledBookMarkIcon
                   onClick={() => onInteraction("bookmark")}
                   isActive={bookmarkStatus}
                 />
                 <InteractionText>{bookmarkCnt}</InteractionText>
-              </BookMarkWrapper>
+              </BookMarkWrapper> */}
               <BookMarkWrapper>
                 <StyledLikeIcon
                   onClick={() => onInteraction("like")}
@@ -151,7 +151,9 @@ const StudyDetailHeader = ({
 
           <HeaderRightWrapper>
             <PostStateButton>{recruitPostTypeEnum}</PostStateButton>
-            <ThumbNailImgWrapper imageUrl={imageUrl} />
+            <ThumbNailImgWrapper imageUrl={imageUrl}>
+              <StyledGrayLogo imageUrl={imageUrl} />
+            </ThumbNailImgWrapper>
           </HeaderRightWrapper>
         </RowWrapper>
       </ContentWrapper>
@@ -321,13 +323,13 @@ const BookMarkWrapper = styled.div`
   font-size: 1.2em;
 `;
 
-const StyledBookMarkIcon = styled(BookMarkIcon)`
-  margin-bottom: 0.1em;
-  width: 1em;
-  height: 1.3125em;
-  cursor: pointer;
-  fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
-`;
+// const StyledBookMarkIcon = styled(BookMarkIcon)`
+//   margin-bottom: 0.1em;
+//   width: 1em;
+//   height: 1.3125em;
+//   cursor: pointer;
+//   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
+// `;
 const StyledLikeIcon = styled(LikeIcon)`
   margin-bottom: 0.1em;
   width: 1.375em;
@@ -375,6 +377,16 @@ const ThumbNailImgWrapper = styled.div`
   border-radius: 10px;
   width: 100%;
   height: 13.125em;
-  background-image: url(${(props) => props.imageUrl});
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f4f8;
+  background-image: ${(props) =>
+    props.imageUrl ? `url(${props.imageUrl}` : "none"});
   background-size: cover;
+`;
+
+const StyledGrayLogo = styled(GrayLogo)`
+  width: 2rem;
+  display: ${(props) => (props.imageUrl ? "none" : "flex")};
 `;
