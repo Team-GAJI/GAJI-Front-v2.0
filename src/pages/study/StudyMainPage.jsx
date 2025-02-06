@@ -361,7 +361,6 @@ const ViewAllWrapper = styled.div`
 const StudyPreviewWrapper = styled(Scroll)`
   width: 100%;
   display: flex;
-  justify-content: center;
   overflow-x: scroll;
 `;
 
