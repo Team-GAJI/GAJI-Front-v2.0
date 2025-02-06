@@ -5,13 +5,14 @@ import StudyPostWriterInfo from "./StudyPostWriterInfo";
 import BackgroundImage from "../../../assets/images/community/communityBackground.png";
 import UserProfileImg from "../../../assets/images/community/userProfile.png";
 // import BookMarkIcon from "../../../assets/icons/communityPost/postBookMark.svg?react";
+import ShareIcon from "../../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../../assets/icons/communityPost/postReport.svg?react";
 import GrayLogo from "../../../assets/icons/common/grayLogo.svg?react";
 import ReportModal from "./ReportModal";
 import { ContentWrapper } from "../../../components/common/MediaWrapper";
 import { studyRecruitAPI } from "../api/studyRecruitAPI";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // 세자리마다 콤마 기능
 // const formatNumberWithCommas = (number) => {
@@ -38,6 +39,7 @@ const StudyDetailHeader = ({
   const [isWriterInfoVisible, setIsWriterInfoVisible] = useState(false);
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [isReportNoticeVisible, setIsReportNoticeVisible] = useState(false);
+  const [isShareNoticeVisible, setIsShareNoticeVisible] = useState(false);
 
   const showWriterInfo = () => setIsWriterInfoVisible(true);
   const hideWriterInfo = () => setIsWriterInfoVisible(false);
@@ -45,11 +47,28 @@ const StudyDetailHeader = ({
   const showReportModal = () => setIsReportModalVisible(true);
   const hideReportModal = () => setIsReportModalVisible(false);
 
+  const location = useLocation();
+
+  // 신고 완료 모달 함수
   const showReportNotice = () => {
     setIsReportNoticeVisible(true);
     setTimeout(() => {
       setIsReportNoticeVisible(false);
     }, 2000);
+  };
+
+  // 공유 완료 모달 함수
+  const baseUrl = "http://localhost:3000";
+  const showShareNotice = async (url) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setIsShareNoticeVisible(true);
+      setTimeout(() => {
+        setIsShareNoticeVisible(false);
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const navigate = useNavigate();
@@ -70,10 +89,19 @@ const StudyDetailHeader = ({
     <HeaderWrapper>
       <ContentWrapper>
         <RowWrapper>
+          {/* 신고 완료 모달 */}
           <ReportNoticeWrapper isVisible={isReportNoticeVisible}>
             <ReportNotice>
               <StyledReportCheck />
               신고가 완료되었습니다
+            </ReportNotice>
+          </ReportNoticeWrapper>
+
+          {/* 공유 완료 모달 */}
+          <ReportNoticeWrapper isVisible={isShareNoticeVisible}>
+            <ReportNotice>
+              <StyledReportCheck />
+              주소가 복사되었습니다
             </ReportNotice>
           </ReportNoticeWrapper>
 
@@ -138,6 +166,14 @@ const StudyDetailHeader = ({
               <BookMarkWrapper>
                 <StyledReportIcon onClick={showReportModal} />
                 <InteractionText>신고</InteractionText>
+              </BookMarkWrapper>
+              <BookMarkWrapper>
+                <StyledShareIcon
+                  onClick={() =>
+                    showShareNotice(`${baseUrl}${location.pathname}`)
+                  }
+                />
+                <InteractionText>공유</InteractionText>
               </BookMarkWrapper>
 
               <ReportModal
@@ -338,6 +374,12 @@ const StyledLikeIcon = styled(LikeIcon)`
   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
 `;
 const StyledReportIcon = styled(ReportIcon)`
+  margin-bottom: 0.1em;
+  width: 1.5em;
+  height: 1.25em;
+  cursor: pointer;
+`;
+const StyledShareIcon = styled(ShareIcon)`
   margin-bottom: 0.1em;
   width: 1.5em;
   height: 1.25em;
