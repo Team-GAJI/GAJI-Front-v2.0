@@ -31,6 +31,7 @@ const communityWriteSlice = createSlice({
     setCategory: (state, action) => {
       state.category = action.payload;
     },
+    resetPostCreate: () => initialState,
   },
 });
 
@@ -41,6 +42,7 @@ export const {
   setType,
   setHashtagList,
   setCategory,
+  resetPostCreate,
 } = communityWriteSlice.actions;
 
 export default communityWriteSlice.reducer;
