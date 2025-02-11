@@ -42,7 +42,11 @@ function App() {
         {/* Study 관련 라우트 */}
         <Route exact path="/study" element={<StudyMainPage />} />
         <Route exact path="/study/create" element={<StudyCreatePage />} />
-        <Route exact path="/study/detail" element={<StudyDetailPage />} />
+        <Route
+          exact
+          path="/study/detail/:roomId"
+          element={<StudyDetailPage />}
+        />
 
         <Route
           exact
