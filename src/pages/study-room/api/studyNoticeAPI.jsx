@@ -5,8 +5,8 @@ export const studyNoticeAPI = async (roomId) => {
     const response = await api.get(
       `study-rooms/${roomId}/notices?lastNoticeId=0`,
     );
-    console.log(response.data.result.noticeDtoList);
-    return response.data.result.noticeDtoList;
+
+    return response.data.result;
   } catch (error) {
     console.error("API 요청 중 오류 발생:", error);
     throw error;
@@ -19,8 +19,7 @@ export const studyFirstNoticeAPI = async (roomId) => {
       `study-rooms/${roomId}/notices?lastNoticeId=0&size=1`,
     );
 
-    console.log(response.data.result.noticeDtoList);
-    return response.data.result.noticeDtoList;
+    return response.data.result;
   } catch (error) {
     console.error("API 요청 중 오류 발생:", error);
     throw error;

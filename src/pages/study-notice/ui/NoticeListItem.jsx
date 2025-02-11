@@ -1,76 +1,56 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import NoticeAlarm from "../../../assets/icons/noticeRoom/NoticeAlarm.png";
 import userProfile from "../../../assets/images/community/userProfile.png";
 import CheckTooltip from "../../study-room/ui/CheckTooltip";
+import { useNavigate } from "react-router-dom";
 
-const NoticeSquare = ({
-  notice,
-  isHovered,
-  onMouseEnter,
-  onMouseLeave,
-  onMoveToTop,
-}) => {
+const NoticeListItem = ({ notice }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
-
-  const handleMouseEnter = () => {
-    setTooltipVisible(true);
+  const navigte = useNavigate();
+  const handleDetail = () => {
+    navigte("/study/notice/detail", {
+      state: { noticeContent: notice.content },
+    });
   };
-
-  const handleMouseLeave = () => {
-    setTooltipVisible(false);
-  };
-
   return (
-    <NoticeSquareWrapper
-      isHovered={isHovered}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <NoticeListItemWrapper onClick={handleDetail}>
       <ColumnWrapper>
         <InputWrapper>
-          <AlarmIcon
-            src={NoticeAlarm}
-            alt="공지"
-            isHovered={isHovered}
-            onClick={onMoveToTop}
-          />
-          <Text1 isHovered={isHovered}>{notice.text1}</Text1>
+          <NoticeTitle>{notice.title}</NoticeTitle>
         </InputWrapper>
-        <Text2>{notice.text2}</Text2>
+
         <Container1>
           <User src={userProfile} alt="User Icon" />
-          <Text4>{notice.user}</Text4>
-          <Text3>{notice.time}</Text3>
-          <CheckButton
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
+          <Text4>{notice.authorName}</Text4>
+          <Text3>{notice.timeSincePosted}</Text3>
+          <CheckButton>
             <span>확인</span>
-            <span>{notice.checks}</span>
+            <span>{notice.confirmCount}</span>
             <CheckTooltip
-              users={[
-                "user1023",
-                "user2045",
-                "user3098",
-                "user4567",
-                "user5678",
-              ]}
+              users={
+                [
+                  // "user1023",
+                  // "user2045",
+                  // "user3098",
+                  // "user4567",
+                  // "user5678",
+                ]
+              }
               visible={tooltipVisible}
             />
           </CheckButton>
         </Container1>
       </ColumnWrapper>
-    </NoticeSquareWrapper>
+    </NoticeListItemWrapper>
   );
 };
 
-export default NoticeSquare;
+export default NoticeListItem;
 
-const NoticeSquareWrapper = styled.div`
+const NoticeListItemWrapper = styled.div`
   width: 100%;
   height: auto;
-  border: 0.1em solid ${(props) => (props.isHovered ? "#8E59FF" : "#ccc")};
+  border: 1px solid #8e59ff;
   border-radius: 1.25em;
   display: flex;
   align-items: center;
@@ -125,66 +105,16 @@ const InputWrapper = styled.div`
   }
 `;
 
-const Text1 = styled.p`
-  padding-left: ${(props) => (props.isHovered ? "2.5em" : "0.5em")};
+const NoticeTitle = styled.p`
   height: auto;
   font-weight: 800;
   font-size: 1em;
   line-height: 1.4em;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
     font-size: 0.9em;
-    padding-left: ${(props) => (props.isHovered ? "2em" : "0.5em")};
+
     line-height: 1.2em;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 0.8em;
-    padding-left: ${(props) => (props.isHovered ? "1.5em" : "0.5em")};
-    line-height: 1.1em;
-  }
-`;
-
-const AlarmIcon = styled.img`
-  position: absolute;
-  left: 0.625em;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0.9375em;
-  height: auto;
-  cursor: pointer;
-  display: ${(props) => (props.isHovered ? "block" : "none")};
-
-  @media (max-width: 768px) {
-    width: 0.8em;
-  }
-
-  @media (max-width: 480px) {
-    width: 0.7em;
-  }
-`;
-
-const Text2 = styled.p`
-  height: auto;
-  font-weight: 600;
-  font-size: 0.8em;
-  color: #697077;
-  padding: 0.8125em 0;
-  margin-top: 0;
-  line-height: 1.4em;
-  box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    font-size: 0.75em;
-    padding: 0.5em 0;
-    line-height: 1.2em;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 0.7em;
-    padding: 0.4em 0;
-    line-height: 1.1em;
   }
 `;
 
@@ -214,7 +144,6 @@ const User = styled.img`
   justify-content: center;
   margin-left: 0.625em;
   flex-shrink: 0;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
     width: 2em;
@@ -236,7 +165,6 @@ const Text3 = styled.p`
   color: #a2a3b2;
   padding: 0.8125em;
   flex-shrink: 0;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
     font-size: 0.45em;
@@ -257,7 +185,6 @@ const Text4 = styled.p`
   padding: 0.8125em;
   margin-left: 0.625em;
   flex-shrink: 0;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
     font-size: 0.45em;
@@ -286,7 +213,6 @@ const CheckButton = styled.button`
   margin-left: auto;
   flex-shrink: 0;
   position: relative;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
     width: 4.5em;

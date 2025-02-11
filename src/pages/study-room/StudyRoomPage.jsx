@@ -25,7 +25,9 @@ const StudyRoomPage = () => {
 
   const navigate = useNavigate();
   const handleNotice = () => {
-    navigate("/study/notice", { state: { roomId: roomId } });
+    navigate("/study/notice", {
+      state: { roomId, isWriter, studyName: studyInfo.name },
+    });
   };
   const handleManageClick = () => {
     navigate("/study/manage", { state: { roomId, week: currentWeek + 1 } });
@@ -71,9 +73,10 @@ const StudyRoomPage = () => {
       />
       <ContentWrapper>
         <MainContent>
-          <div onClick={handleNotice}>
+          <RowWrapper>
             <FirstNoticeSquare2 notice={firstNotice} />
-          </div>
+            <NoticeMoreButton onClick={handleNotice}>더보기</NoticeMoreButton>
+          </RowWrapper>
           <WeekCurriculum
             studyInfo={studyInfo}
             roomId={roomId}
@@ -90,6 +93,27 @@ const StudyRoomPage = () => {
 
 export default StudyRoomPage;
 
+const NoticeMoreButton = styled.div`
+  cursor: pointer;
+  background-color: #8e59ff;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 16px;
+  padding: 0.5em 1.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+`;
+
+const RowWrapper = styled.div`
+  margin-bottom: 2em;
+  display: flex;
+  gap: 1em;
+  align-items: center;
+`;
 const StudyDate = styled.span`
   margin-top: -1em;
   color: grey;

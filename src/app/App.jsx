@@ -22,6 +22,7 @@ import CommunityPage from "../pages/community/CommunityPage";
 import CommunityDetailPage from "../pages/community-detail/CommunityDetailPage";
 import CommunityWritePage from "../pages/community-write/CommunityWritePage";
 import KakaoRedirect from "../pages/login/KakaoRedirect";
+import StudyNoticeDetailPage from "../pages/study-notice-detail/StudyNoticeDetailPage";
 
 function App() {
   return (
@@ -54,6 +55,11 @@ function App() {
           exact
           path="/study/notice/write"
           element={<StudyNoticeWritePage />}
+        />
+        <Route
+          exat
+          path="/study/notice/detail"
+          element={<StudyNoticeDetailPage />}
         />
         <Route exact path="/study/overview" element={<StudyOverviewPage />} />
         <Route exact path="/study/room" element={<StudyRoomPage />} />
