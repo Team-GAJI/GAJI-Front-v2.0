@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { weekTaskProgressAPI } from "../api/weekTaskProgressAPI";
+import { weekStudyInfoAPI } from "../api/weekStudyInfoAPI";
+import { weekTaskListAPI } from "../api/weekTaskListAPI";
 
-const WeekCurriculum = ({ studyInfo, roomId, week }) => {
-  const nicknames = [
-    "릴규",
-    "디오",
-    "따마",
-    "지민",
-    "스타",
-    "하나",
-    "연두",
-    "워치",
-    "샤크",
-    "연두2",
-  ];
-  const opacity = ["100%", "70%", "30%", "30%", "100%", "100%", "100%", "100%"];
+const WeekCurriculum = ({ roomId, week }) => {
+  const [weekInfo, setWeekInfo] = useState();
+  const [weekTaskProgress, setWeekTaskProgress] = useState();
+  const [weekTaskListData, setWeekTaskListData] = useState();
+  // const nicknames = [
+  //   "릴규",
+  //   "디오",
+  //   "따마",
+  //   "지민",
+  //   "스타",
+  //   "하나",
+  //   "연두",
+  //   "워치",
+  //   "샤크",
+  //   "연두2",
+  // ];
+  // const opacity = ["100%", "70%", "30%", "30%", "100%", "100%", "100%", "100%"];
 
-  const [hoveredNickname, setHoveredNickname] = useState(null);
+  // const [hoveredNickname, setHoveredNickname] = useState(null);
   const [activeTask1, setActiveTask1] = useState(false); // task1
   const [activeTask2, setActiveTask2] = useState(false); // task2
   const [activeTask3, setActiveTask3] = useState(false); // task3
@@ -58,55 +63,65 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
     }
   };
 
-  const truncateNickname = (nickname) => {
-    return nickname.length > 3 ? `${nickname.slice(0, 3)}...` : nickname;
-  };
+  // const truncateNickname = (nickname) => {
+  //   return nickname.length > 3 ? `${nickname.slice(0, 3)}...` : nickname;
+  // };
 
   useEffect(() => {
-    console.log(roomId, week);
-    try {
-      const response = weekTaskProgressAPI(roomId, week);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+    const fetchData = async () => {
+      try {
+        const weekInfoData = await weekStudyInfoAPI(roomId, week);
+        const weekTaskData = await weekTaskProgressAPI(roomId, week);
+        const weekTaskListData = await weekTaskListAPI(roomId, week);
+        setWeekInfo(weekInfoData);
+        setWeekTaskProgress(weekTaskData);
+        setWeekTaskListData(weekTaskListData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, [roomId, week]);
   return (
     <>
-      <WeekStudySummary>
-        <MainText>1주차</MainText>
-        <Date>2024. 03.19 - 03. 26</Date>
-      </WeekStudySummary>
-      <StudyCurriculumName>1주차 스터디 제목</StudyCurriculumName>
-      <StudyCurriculumDescreption>
-        4주차 스터디 상세설명 입니다 4주차 스터디 상세설명 입니다 4주차 스터디
-        상세설명 입니다 4주차 스터디 상세설명 입니다 4주차 스터디 상세설명
-        입니다 4주차 스터디 상세설명 입니다 4주차 스터디 상세설명 입니다 4주차
-        스터디 상세설명 입니다 4주차 스터디 상세설명 입니다 4주차 스터디
-        상세설명 입니다 4주차 스터디 상세설명 입니다 4주차 스터디 상세설명
-        입니다
-      </StudyCurriculumDescreption>
+      {weekInfo && (
+        <>
+          <WeekStudySummary>
+            <MainText>{week + 1}주차</MainText>
 
+            <Date>
+              {weekInfo.studyPeriod.startDate} - {weekInfo.studyPeriod.endDate}
+            </Date>
+          </WeekStudySummary>
+
+          <StudyCurriculumName>{weekInfo.title}</StudyCurriculumName>
+          <StudyCurriculumDescreption>
+            {weekInfo.content}
+          </StudyCurriculumDescreption>
+        </>
+      )}
       <DivisionLine />
 
       <TaskContainer>
-        <CurrentWeek>
-          <p>이번주 과제</p>
-          <TaskSquare>
-            <TaskList>
-              <TaskItem isActive={activeTask1} onClick={() => handleTask1()}>
-                과제 1
-              </TaskItem>
-              <TaskItem isActive={activeTask2} onClick={() => handleTask2()}>
-                과제 2
-              </TaskItem>
-              <TaskItem isActive={activeTask3} onClick={() => handleTask3()}>
-                과제 3
-              </TaskItem>
-            </TaskList>
-          </TaskSquare>
-        </CurrentWeek>
-
+        {weekTaskListData && (
+          <CurrentWeek>
+            <p>이번주 과제</p>
+            <TaskSquare>
+              <TaskList>
+                <TaskItem isActive={activeTask1} onClick={() => handleTask1()}>
+                  과제 1
+                </TaskItem>
+                <TaskItem isActive={activeTask2} onClick={() => handleTask2()}>
+                  과제 2
+                </TaskItem>
+                <TaskItem isActive={activeTask3} onClick={() => handleTask3()}>
+                  과제 3
+                </TaskItem>
+              </TaskList>
+            </TaskSquare>
+          </CurrentWeek>
+        )}
         <MyTask>
           <p>내 과제</p>
           <MyStudyData>
@@ -129,7 +144,8 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
         </MyTask>
       </TaskContainer>
 
-      <p>스터디원 달성도</p>
+      {/* TODO : 스터디원 정보 불러오기 */}
+      {/* <p>스터디원 달성도</p>
       <CircleContainer>
         <NinckNameList>
           {nicknames.map((nickname, index) => (
@@ -158,7 +174,7 @@ const WeekCurriculum = ({ studyInfo, roomId, week }) => {
             <CloudyText>50%</CloudyText>
           </Row>
         </TaskWrapper>
-      </CircleContainer>
+      </CircleContainer> */}
     </>
   );
 };

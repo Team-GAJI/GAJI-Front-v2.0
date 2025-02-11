@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ roomId, week, setCurrentWeek, studyInfo }) => {
+const SideBar = ({ roomId, week, setCurrentWeek, studyInfo, isWriter }) => {
   const navigate = useNavigate();
   const handleManage = () => {
     navigate("/study/manage", {
@@ -24,10 +24,12 @@ const SideBar = ({ roomId, week, setCurrentWeek, studyInfo }) => {
           </React.Fragment>
         ))}
       </SidebarContainer>
-      {/* TODO : 관리자만 관리되도록  */}
-      <SidebarManageButton onClick={handleManage}>
-        스터디 관리
-      </SidebarManageButton>
+
+      {isWriter && (
+        <SidebarManageButton onClick={handleManage}>
+          스터디 관리
+        </SidebarManageButton>
+      )}
     </SidebarWrapper>
   );
 };
