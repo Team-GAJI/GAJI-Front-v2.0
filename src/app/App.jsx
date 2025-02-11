@@ -66,7 +66,7 @@ function App() {
         <Route exact path="/community" element={<CommunityPage />} />
         <Route
           exact
-          path="/community/detail"
+          path="/community/detail/:postId"
           element={<CommunityDetailPage />}
         />
         <Route exact path="/community/write" element={<CommunityWritePage />} />

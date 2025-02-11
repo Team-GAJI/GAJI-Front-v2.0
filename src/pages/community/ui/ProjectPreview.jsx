@@ -25,12 +25,7 @@ const ProjectPreview = ({
       const postDetail = await communityPostAPI(postId);
       console.log(postDetail);
       console.log("postDetail:", postDetail);
-      navigate("/community/detail", {
-        state: {
-          postDetail: postDetail,
-          postId: postId,
-        },
-      });
+      navigate(`/community/detail/${postId}`);
     } catch (error) {
       console.error("스터디 생성 중 오류 발생:", error);
       // 필요에 따라 오류 처리 로직을 추가할 수 있습니다.

@@ -9,7 +9,7 @@ import ShareIcon from "../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../assets/icons/communityPost/postReport.svg?react";
 import DownArrowIcon from "../../assets/icons/communityPost/whiteDownArrow.svg?react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ReportModal from "../study-detail/ui/ReportModal";
@@ -29,21 +29,16 @@ import { communityPostAPI } from "./api/communityPostAPI";
 // };
 
 const CommunityDetailPage = () => {
-  // 게시글 작성에서 정보 가져오기
-  const location = useLocation();
-
-  //const postId = location.state?.postId || {}; // `postId`가 존재하지 않으면 빈 객체로 초기화
-  const { postDetail } = location.state || {};
-  const { postId } = location.state;
-
+  const { postId } = useParams();
   // state 관리
-  const [bookMarkState, setBookMarkState] = useState(postDetail.bookMarkStatus);
-  const [likeState, setLikeState] = useState(postDetail.likeStatus);
-  const [bookMarkCount, setBookMarkCount] = useState(postDetail.bookmarkCnt);
-  const [likeCount, setLikeCount] = useState(postDetail.likeCnt);
+  const [postDetail, setPostDetail] = useState(null);
+  const [bookMarkState, setBookMarkState] = useState(false);
+  const [likeState, setLikeState] = useState(false);
+  const [bookMarkCount, setBookMarkCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
   const [isWriterInfoVisible, setIsWriterInfoVisible] = useState(false);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(postDetail.status);
+  const [selectedOption, setSelectedOption] = useState("");
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [isReportNoticeVisible, setIsReportNoticeVisible] = useState(false);
   const [isShareNoticeVisible, setIsShareNoticeVisible] = useState(false);
@@ -56,11 +51,12 @@ const CommunityDetailPage = () => {
     const fetchPostDetail = async () => {
       try {
         const postDetail = await communityPostAPI(postId);
-
+        setPostDetail(postDetail);
         setLikeState(postDetail.likeStatus); // 서버로부터 좋아요 상태를 가져와 설정
         setLikeCount(postDetail.likeCnt); // 좋아요 개수 설정
         setBookMarkState(postDetail.bookMarkStatus); // 서버로부터 북마크 상태를 가져와 설정
         setBookMarkCount(postDetail.bookmarkCnt); // 북마크 개수 설정
+        setSelectedOption(postDetail.status);
       } catch (error) {
         console.error("게시물 정보를 불러오는 중 오류 발생:", error);
       }
