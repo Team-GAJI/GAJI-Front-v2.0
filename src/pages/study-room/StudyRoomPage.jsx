@@ -8,54 +8,75 @@ import backGroundUrl from "../../assets/images/mypage/mypageBackground.png";
 import { useEffect } from "react";
 import { studyFirstNoticeAPI } from "./api/studyNoticeAPI";
 import FirstNoticeSquare2 from "./ui/FirstNoticeSquare2";
+import { studyRoomPostDetailAPI } from "./api/studyRoomPostDetailAPI";
 
 const StudyRoomPage = () => {
-  const [activeButtonIndex, setActiveButtonIndex] = useState(0);
-  const [firstNotice, setFirstNotice] = useState();
-
   const location = useLocation();
   const data = location.state?.data || {};
-
   const roomId = useMemo(
     () => location.state?.roomId || {},
     [location.state?.roomId],
   );
   const studyInfo = data;
+
+  const [isWriter, setIsWriter] = useState(false);
+  const [firstNotice, setFirstNotice] = useState();
+  const [currentWeek, setCurrentWeek] = useState(0);
+
   const navigate = useNavigate();
-
-  function calculateWeeks(startDate, endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const totalDays = Math.round(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
-    );
-    const totalWeeks = Math.ceil((totalDays + 1) / 7);
-
-    return totalWeeks;
-  }
-
-  const weekCount = calculateWeeks(studyInfo.startDay, studyInfo.endDay);
-  const [currentWeek, setCurrentWeek] = useState(weekCount);
+  const handleNotice = () => {
+    navigate("/study/notice", {
+      state: { roomId, isWriter, studyName: studyInfo.name },
+    });
+  };
+  const handleManageClick = () => {
+    navigate("/study/manage", { state: { roomId, week: currentWeek + 1 } });
+  };
 
   useEffect(() => {
-    const noticeData = studyFirstNoticeAPI(roomId);
-    if (noticeData) setFirstNotice(noticeData);
-  }, []);
+    if (!roomId) return;
+
+    const fetchData = async () => {
+      try {
+        const writerId = await studyRoomPostDetailAPI(roomId);
+        const userId = localStorage.getItem("userId");
+
+        if (writerId === Number(userId)) {
+          setIsWriter(true);
+        }
+        // TODO : currentWeek update 코드
+
+        const noticeData = await studyFirstNoticeAPI(roomId);
+        if (noticeData) setFirstNotice(noticeData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [roomId]);
+
   return (
     <>
       <Header>
         <StudyName>{studyInfo.name}</StudyName>
+        <StudyDate>
+          {studyInfo.startDay} ~ {studyInfo.endDay}
+        </StudyDate>
       </Header>
       <SideBar
         studyInfo={studyInfo}
         roomId={roomId}
-        week={weekCount}
+        week={currentWeek + 1}
+        isWriter={isWriter}
         setCurrentWeek={setCurrentWeek}
       />
       <ContentWrapper>
         <MainContent>
-          <FirstNoticeSquare2 notice={firstNotice} />
+          <RowWrapper>
+            <FirstNoticeSquare2 notice={firstNotice} />
+            <NoticeMoreButton onClick={handleNotice}>더보기</NoticeMoreButton>
+          </RowWrapper>
           <WeekCurriculum
             studyInfo={studyInfo}
             roomId={roomId}
@@ -63,20 +84,40 @@ const StudyRoomPage = () => {
           />
         </MainContent>
       </ContentWrapper>
-      <div
-        onClick={() =>
-          navigate("/study/manage", {
-            state: { roomId: roomId, week: weekCount },
-          })
-        }
-      >
-        <MobileManageButton />
+      <div onClick={handleManageClick}>
+        {isWriter && <MobileManageButton />}
       </div>
     </>
   );
 };
 
 export default StudyRoomPage;
+
+const NoticeMoreButton = styled.div`
+  cursor: pointer;
+  background-color: #8e59ff;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  border-radius: 16px;
+  padding: 0.5em 1.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+`;
+
+const RowWrapper = styled.div`
+  margin-bottom: 2em;
+  display: flex;
+  gap: 1em;
+  align-items: center;
+`;
+const StudyDate = styled.span`
+  margin-top: -1em;
+  color: grey;
+`;
 
 const ContentWrapper = styled.div`
   width: 70%;
@@ -116,7 +157,7 @@ const Header = styled.div`
   justify-content: center;
   width: 100%;
   height: 10em;
-  gap: 1em;
+
   background-color: #fbfaff;
   background-image: url(${backGroundUrl});
   @media (max-width: 768px) {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import Notices from "./ui/Notices";
-import PageHeader from "../../components/common/PageHeader";
+import NoticeList from "./ui/NoticeList";
 import { ContentWrapper60 } from "../../components/common/MediaWrapper";
 import { studyNoticeAPI } from "../study-room/api/studyNoticeAPI"; // API 모듈에서 함수 임포트
 import MobileWriteButton from "../../components/common/MobileWriteButton";
@@ -10,21 +9,16 @@ import MobileWriteButton from "../../components/common/MobileWriteButton";
 const StudyNoticePage = () => {
   const navigate = useNavigate();
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [notices, setNotices] = useState([]);
+  const [notices, setNotices] = useState();
   const location = useLocation();
-  const roomId = location.state?.roomId || {};
+  const roomId = location.state?.roomId ?? null;
+  const isWriter = location.state?.isWriter ?? false;
+  const studyName = location.state?.studyName ?? "";
 
   const handleNavigateToRegister = () => {
-    console.log("트러블슈팅 글쓰기로 이동");
-    navigate("/studynotice-register", { state: { roomId: roomId } });
-  };
-
-  const handleNavigateToTroubleshooting = () => {
-    navigate("/troubleshooting", { state: { roomId: roomId } });
-  };
-
-  const handleNavigateToStudyRoom = () => {
-    navigate("/studyroom", { state: { roomId: roomId } });
+    navigate("/study/notice/write", {
+      state: { roomId, studyName },
+    });
   };
 
   const moveToTop = (index) => {
@@ -34,20 +28,11 @@ const StudyNoticePage = () => {
     setNotices(updatedNotices);
   };
 
-  const headerTitles = [
-    "스터디 홈",
-    "트러블 슈팅 게시판",
-    "정보나눔 게시판",
-    "채팅방",
-  ];
-
   useEffect(() => {
-    console.log(roomId);
     const fetchNotices = async () => {
       try {
-        const fetchedNotices = await studyNoticeAPI(roomId);
-        setNotices(fetchedNotices);
-        console.log(notices);
+        const noticeData = await studyNoticeAPI(roomId);
+        setNotices(noticeData);
       } catch (error) {
         console.error("공지사항을 불러오는 중 오류가 발생했습니다:", error);
       }
@@ -58,39 +43,29 @@ const StudyNoticePage = () => {
 
   return (
     <>
-      <PageHeader
-        large={true}
-        pageTitle="스터디룸 공지사항"
-        headerTitles={headerTitles}
-        activeButtonIndex={1}
-        onButtonClick={(index) => {
-          if (index === 0) handleNavigateToStudyRoom();
-          if (index === 1) handleNavigateToTroubleshooting();
-        }}
-        changeColorOnClick={false}
-        changeColorOnHover={true}
-      />
       <ContentWrapper60>
         <ColumnWrapper>
           <Container>
-            <Text>스터디명 공지사항</Text>
-            <div onClick={() => handleNavigateToRegister()}>
-              <MobileWriteButton />
-            </div>
-            <WritingButton onClick={() => handleNavigateToRegister()}>
-              + 공지사항 작성
-            </WritingButton>
+            <Text>{studyName} 공지사항</Text>
+            {isWriter && (
+              <>
+                <div onClick={() => handleNavigateToRegister()}>
+                  <MobileWriteButton />
+                </div>
+                <WritingButton onClick={() => handleNavigateToRegister()}>
+                  + 공지사항 작성
+                </WritingButton>
+              </>
+            )}
           </Container>
 
-          {notices.length > 0 ? (
-            <NoticeSquareWrapper>
-              <Notices
-                notices={notices}
-                onMoveToTop={moveToTop}
-                hoveredIndex={hoveredIndex}
-                setHoveredIndex={setHoveredIndex}
-              />
-            </NoticeSquareWrapper>
+          {notices && notices.length > 0 ? (
+            <NoticeList
+              notices={notices}
+              onMoveToTop={moveToTop}
+              hoveredIndex={hoveredIndex}
+              setHoveredIndex={setHoveredIndex}
+            />
           ) : (
             <NoNoticesText>공지사항이 없습니다.</NoNoticesText>
           )}
@@ -140,26 +115,9 @@ const WritingButton = styled.button`
   height: 2.5em;
   margin-right: 0;
   font-family: "NanumSquareNeo", sans-serif;
-
-  &:hover {
-    background-color: #5548c8;
-  }
-
+  cursor: pointer;
   @media (max-width: 768px) {
     display: none;
-  }
-`;
-
-const NoticeSquareWrapper = styled.div`
-  display: grid;
-  grid-template-rows: repeat(5, auto);
-  gap: 0.625em;
-  margin-bottom: 1.875em;
-  font-family: "NanumSquareNeo", sans-serif;
-
-  @media (max-width: 768px) {
-    gap: 0.5em;
-    margin-bottom: 1.5em;
   }
 `;
 

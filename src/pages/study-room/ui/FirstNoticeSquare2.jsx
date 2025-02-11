@@ -18,10 +18,9 @@ export default FirstNoticeSquare2;
 
 const NoticeSquareWrapper = styled.div`
   width: 100%;
-  height: auto;
+  height: 36px;
   border: 1px solid #8e59ff;
   border-radius: 0.5em;
-  margin-bottom: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
