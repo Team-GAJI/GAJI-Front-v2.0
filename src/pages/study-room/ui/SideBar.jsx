@@ -106,6 +106,7 @@ const SidebarWrapper = styled.div`
   gap: 1.25em;
   position: fixed;
   left: 5%;
+  margin-top: 20px;
 
   @media (max-width: 768px) {
     position: sticky;

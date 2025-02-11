@@ -17,6 +17,7 @@ const FirstNoticeSquare2 = ({ firstNotice }) => {
 export default FirstNoticeSquare2;
 
 const NoticeSquareWrapper = styled.div`
+  cursor: pointer;
   width: 100%;
   height: auto;
   border: 1px solid #8e59ff;

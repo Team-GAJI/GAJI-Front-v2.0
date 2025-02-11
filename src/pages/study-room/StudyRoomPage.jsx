@@ -24,7 +24,9 @@ const StudyRoomPage = () => {
   const [currentWeek, setCurrentWeek] = useState(0);
 
   const navigate = useNavigate();
-
+  const handleNotice = () => {
+    navigate("/study/notice", { state: { roomId: roomId } });
+  };
   const handleManageClick = () => {
     navigate("/study/manage", { state: { roomId, week: currentWeek + 1 } });
   };
@@ -69,7 +71,9 @@ const StudyRoomPage = () => {
       />
       <ContentWrapper>
         <MainContent>
-          <FirstNoticeSquare2 notice={firstNotice} />
+          <div onClick={handleNotice}>
+            <FirstNoticeSquare2 notice={firstNotice} />
+          </div>
           <WeekCurriculum
             studyInfo={studyInfo}
             roomId={roomId}
