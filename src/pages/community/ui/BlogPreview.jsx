@@ -4,8 +4,8 @@ import LikeIcon from "../../../assets/icons/community/fillLikeIcon.svg?react";
 import { useNavigate } from "react-router-dom";
 import userProfileImg from "../../../assets/images/community/userProfile.png";
 import { communityPostAPI } from "../../community-detail/api/communityPostAPI";
-import PostBackground from "../../../assets/images/common/communityExampleImage.png"; // 기본 썸네일 이미지
 import { studyRoomPostDetailAPI } from "../../study-room/api/studyRoomPostDetailAPI";
+import ThumbnailLogo from "../../../assets/logos/ThumbnailLogo.svg?react";
 
 const BlogPreview = ({
   key,
@@ -43,12 +43,13 @@ const BlogPreview = ({
   };
 
   // 기본 썸네일 기능
-  const backgroundImage = background || PostBackground;
+  const backgroundImage = background;
 
   return (
     <PostWrapper key={key} onClick={() => handleSubmit()} link={link}>
       {/* 배경 */}
       <BackgroundWrapper background={backgroundImage}>
+        <StyledThumbnailLogo background={backgroundImage} />
         <LikeWrapper>
           <StyledLikeIcon />
           <Like>{like}</Like>
@@ -123,8 +124,18 @@ const BackgroundWrapper = styled.div`
   border: 1px solid #d0d1d9;
   border-radius: 10px 10px 0 0;
   height: 50%;
-  background-image: ${({ background }) => `url(${background})`};
+  background-color: #f4efff;
+  background-image: ${(props) =>
+    props.background ? `url(${props.background})` : "none"};
   background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledThumbnailLogo = styled(ThumbnailLogo)`
+  width: 2rem;
+  display: ${(props) => (props.background ? "none" : "flex")};
 `;
 
 const LikeWrapper = styled.div`

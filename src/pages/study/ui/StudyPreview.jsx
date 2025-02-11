@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import PostBackground from "../../../assets/images/common/studyExampleImage.png"; // 기본 썸네일 이미지
 import { studyDetailAPI } from "../../study-detail/api/studyDetailAPI";
+import ThumbnailLogo from "../../../assets/logos/ThumbnailLogo.svg?react";
 
 const StudyPreview = ({
   key,
@@ -50,7 +50,7 @@ const StudyPreview = ({
   const displayDday = dday === 0 ? "Day" : dday < 0 ? 0 : dday;
 
   // 기본 썸네일 기능
-  const backgroundImage = background || PostBackground;
+  const backgroundImage = background;
 
   return (
     <PostWrapper
@@ -64,6 +64,10 @@ const StudyPreview = ({
         background={backgroundImage}
         isVisible={isDetailVisible}
       >
+        <StyledThumbnailLogo
+          background={backgroundImage}
+          isVisible={isDetailVisible}
+        />
         <TagWrapper isVisible={isDetailVisible}>
           <Tag>{recruitmentState}</Tag>
           <Tag>{applicant}명 지원</Tag>
@@ -120,26 +124,34 @@ const BackgroundWrapper = styled.div`
   border-radius: 10px 10px 0 0;
   height: ${(props) => (props.isVisible ? "0%" : "50%")};
   display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  background-image: ${({ background }) => `url(${background})`};
+  background-color: #f4efff;
+  background-image: ${(props) =>
+    props.background ? `url(${props.background})` : "none"};
   background-size: cover;
   transition: all 0.3s ease;
   width: 100%;
 `;
 
+const StyledThumbnailLogo = styled(ThumbnailLogo)`
+  width: 2rem;
+  display: ${(props) => (props.background ? "none" : "flex")};
+  visibility: ${(props) => (props.isVisible ? "hidden" : "visibility")};
+  transition-delay: 0.1s;
+`;
+
 const TagWrapper = styled.div`
-  margin-left: 0.8em;
   position: absolute;
   bottom: 0;
   visibility: ${(props) => (props.isVisible ? "hidden" : "visibility")};
   transition-delay: 0.1s;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  width: 100%;
 `;
 
 const Tag = styled.div`
-  margin: 0 0.7em 0.6em 0;
+  margin: 0 0 0.6em 0.8em;
   padding: 0 1em;
   border: 1px solid #d0d1d9;
   border-radius: 30px;
