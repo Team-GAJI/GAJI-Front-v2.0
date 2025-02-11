@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import userProfile from "../../../assets/images/community/userProfile.png";
-import CheckTooltip from "../../study-room/ui/CheckTooltip";
+
 import { useNavigate } from "react-router-dom";
 
 const NoticeListItem = ({ notice }) => {
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const navigte = useNavigate();
+  const navigate = useNavigate();
   const handleDetail = () => {
-    navigte("/study/notice/detail", {
-      state: { noticeContent: notice.content },
+    navigate("/study/notice/detail", {
+      state: { noticeBody: notice.body, noticeTitle: notice.title },
     });
   };
   return (
@@ -23,22 +22,6 @@ const NoticeListItem = ({ notice }) => {
           <User src={userProfile} alt="User Icon" />
           <Text4>{notice.authorName}</Text4>
           <Text3>{notice.timeSincePosted}</Text3>
-          <CheckButton>
-            <span>확인</span>
-            <span>{notice.confirmCount}</span>
-            <CheckTooltip
-              users={
-                [
-                  // "user1023",
-                  // "user2045",
-                  // "user3098",
-                  // "user4567",
-                  // "user5678",
-                ]
-              }
-              visible={tooltipVisible}
-            />
-          </CheckButton>
         </Container1>
       </ColumnWrapper>
     </NoticeListItemWrapper>
@@ -48,6 +31,7 @@ const NoticeListItem = ({ notice }) => {
 export default NoticeListItem;
 
 const NoticeListItemWrapper = styled.div`
+  cursor: pointer;
   width: 100%;
   height: auto;
   border: 1px solid #8e59ff;
@@ -196,33 +180,5 @@ const Text4 = styled.p`
     font-size: 0.4em;
     padding: 0.4em;
     margin-left: 0.4em;
-  }
-`;
-
-const CheckButton = styled.button`
-  width: 5em;
-  height: 2.5em;
-  background-color: #fff;
-  border: 0.0625em solid #8e59ff;
-  border-radius: 0.5em;
-  color: #8e59ff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0.625em;
-  margin-left: auto;
-  flex-shrink: 0;
-  position: relative;
-
-  @media (max-width: 768px) {
-    width: 4.5em;
-    height: 2em;
-    font-size: 0.75em;
-  }
-
-  @media (max-width: 480px) {
-    width: 4em;
-    height: 1.75em;
-    font-size: 0.7em;
   }
 `;

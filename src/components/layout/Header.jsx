@@ -166,6 +166,7 @@ const AuthButton = styled.div`
 `;
 
 const MyPageButton = styled.div`
+  cursor: pointer;
   width: 2.25em;
   height: 2.25em;
   border-radius: 100%;
