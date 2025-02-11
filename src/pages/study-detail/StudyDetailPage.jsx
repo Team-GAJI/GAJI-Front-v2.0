@@ -185,11 +185,11 @@ const StudyDetailPage = () => {
 
             <StyledHr />
             {/* 댓글 영역 */}
-            <StudyCommentContainer
+            {/* <StudyCommentContainer
               roomId={roomId}
               type="study"
               setCommentCount={setCommentCount}
-            />
+            /> */}
           </ContentWrapper>
         </>
       )}

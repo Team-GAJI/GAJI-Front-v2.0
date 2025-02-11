@@ -339,7 +339,6 @@ const Arrow = styled.span`
 const StudyPreviewWrapper = styled(Scroll)`
   width: 100%;
   display: flex;
-  justify-content: center;
   overflow-x: scroll;
   overflow-y: hidden;
 `;
@@ -349,7 +348,6 @@ const BlogPreviewWrapper = styled(Scroll)`
   padding-top: 1em;
   width: 100%;
   display: flex;
-  justify-content: center;
   overflow-x: scroll;
   overflow-y: hidden;
   box-sizing: border-box;

@@ -4,7 +4,8 @@ import ReportCheck from "../../assets/icons/studyDetail/reportCheck.svg?react";
 import PostWriterInfo from "./ui/PostWriterInfo";
 import BackgroundImage from "../../assets/images/community/communityBackground.png";
 import UserProfileImg from "../../assets/images/community/userProfile.png";
-import BookMarkIcon from "../../assets/icons/communityPost/postBookMark.svg?react";
+// import BookMarkIcon from "../../assets/icons/communityPost/postBookMark.svg?react";
+import ShareIcon from "../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../assets/icons/communityPost/postReport.svg?react";
 import DownArrowIcon from "../../assets/icons/communityPost/whiteDownArrow.svg?react";
@@ -45,6 +46,7 @@ const CommunityDetailPage = () => {
   const [selectedOption, setSelectedOption] = useState(postDetail.status);
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [isReportNoticeVisible, setIsReportNoticeVisible] = useState(false);
+  const [isShareNoticeVisible, setIsShareNoticeVisible] = useState(false);
 
   // 댓글 개수
   const [commentCount, setCommentCount] = useState(0);
@@ -131,12 +133,26 @@ const CommunityDetailPage = () => {
   const showReportModal = () => setIsReportModalVisible(true);
   const hideReportModal = () => setIsReportModalVisible(false);
 
-  // 신고 확인 메시지
+  // 신고 완료 모달 함수
   const showReportNotice = () => {
     setIsReportNoticeVisible(true);
     setTimeout(() => {
       setIsReportNoticeVisible(false);
     }, 2000);
+  };
+
+  // 공유 완료 모달 함수
+  const baseUrl = "http://localhost:3000";
+  const showShareNotice = async (url) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setIsShareNoticeVisible(true);
+      setTimeout(() => {
+        setIsShareNoticeVisible(false);
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -145,11 +161,19 @@ const CommunityDetailPage = () => {
         <>
           {/* 헤더 */}
           <HeaderWrapper>
-            {/* 신고 알림 */}
+            {/* 신고 완료 모달 */}
             <ReportNoticeWrapper isVisible={isReportNoticeVisible}>
               <ReportNotice>
                 <StyledReportCheck />
                 신고가 완료되었습니다
+              </ReportNotice>
+            </ReportNoticeWrapper>
+
+            {/* 공유 완료 모달 */}
+            <ReportNoticeWrapper isVisible={isShareNoticeVisible}>
+              <ReportNotice>
+                <StyledReportCheck />
+                주소가 복사되었습니다
               </ReportNotice>
             </ReportNoticeWrapper>
 
@@ -204,13 +228,13 @@ const CommunityDetailPage = () => {
 
               {/* 게시글 상호작용 */}
               <InteractionWrapper>
-                <BookMarkWrapper>
+                {/* <BookMarkWrapper>
                   <StyledBookMarkIcon
                     onClick={() => handleInteraction("bookmark")}
                     isActive={bookMarkState}
                   />
                   <InteractionText>{bookMarkCount}</InteractionText>
-                </BookMarkWrapper>
+                </BookMarkWrapper> */}
                 <BookMarkWrapper>
                   <StyledLikeIcon
                     onClick={() => handleInteraction("like")}
@@ -221,6 +245,14 @@ const CommunityDetailPage = () => {
                 <BookMarkWrapper>
                   <StyledReportIcon onClick={showReportModal} />
                   <InteractionText>신고</InteractionText>
+                </BookMarkWrapper>
+                <BookMarkWrapper>
+                  <StyledShareIcon
+                    onClick={() =>
+                      showShareNotice(`${baseUrl}${location.pathname}`)
+                    }
+                  />
+                  <InteractionText>공유</InteractionText>
                 </BookMarkWrapper>
 
                 {/* 신고 모달창 */}
@@ -462,13 +494,13 @@ const BookMarkWrapper = styled.div`
   font-size: 1.2em;
 `;
 
-const StyledBookMarkIcon = styled(BookMarkIcon)`
-  margin-bottom: 0.1em;
-  width: 1em;
-  height: 1.3125em;
-  cursor: pointer;
-  fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
-`;
+// const StyledBookMarkIcon = styled(BookMarkIcon)`
+//   margin-bottom: 0.1em;
+//   width: 1em;
+//   height: 1.3125em;
+//   cursor: pointer;
+//   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
+// `;
 const StyledLikeIcon = styled(LikeIcon)`
   margin-bottom: 0.1em;
   width: 1.375em;
@@ -477,6 +509,12 @@ const StyledLikeIcon = styled(LikeIcon)`
   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
 `;
 const StyledReportIcon = styled(ReportIcon)`
+  margin-bottom: 0.1em;
+  width: 1.5em;
+  height: 1.25em;
+  cursor: pointer;
+`;
+const StyledShareIcon = styled(ShareIcon)`
   margin-bottom: 0.1em;
   width: 1.5em;
   height: 1.25em;

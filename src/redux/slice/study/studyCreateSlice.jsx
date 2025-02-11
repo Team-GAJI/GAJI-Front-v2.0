@@ -55,6 +55,7 @@ const studyCreateSlice = createSlice({
     setPrivate: (state, action) => {
       state.privateCheck = action.payload;
     },
+    resetStudyCreate: () => initialState,
   },
 });
 
@@ -71,6 +72,7 @@ export const {
   setPeopleMaximum,
   setCategory,
   setPrivate,
+  resetStudyCreate,
 } = studyCreateSlice.actions;
 
 export default studyCreateSlice.reducer;
