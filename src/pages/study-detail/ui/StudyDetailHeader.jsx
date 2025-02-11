@@ -8,7 +8,7 @@ import UserProfileImg from "../../../assets/images/community/userProfile.png";
 import ShareIcon from "../../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../../assets/icons/communityPost/postReport.svg?react";
-import GrayLogo from "../../../assets/icons/common/grayLogo.svg?react";
+import GrayLogo from "../../../assets/logos/grayLogo.svg?react";
 import ReportModal from "./ReportModal";
 import { ContentWrapper } from "../../../components/common/MediaWrapper";
 import { studyRecruitAPI } from "../api/studyRecruitAPI";
@@ -126,8 +126,8 @@ const StudyDetailHeader = ({
               <Wrapper>
                 <StyledBar>|</StyledBar>
                 조회 {views}
-                <StyledBar>|</StyledBar>
-                댓글 {commentCount}
+                {/* <StyledBar>|</StyledBar>
+                댓글 {commentCount} */}
               </Wrapper>
             </TitleDetail>
 

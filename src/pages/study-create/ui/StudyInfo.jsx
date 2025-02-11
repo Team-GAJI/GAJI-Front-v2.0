@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 // import ThumbNailImg from "../../../assets/images/studyDetail/thumbNailImg.png";
-import GrayLogo from "../../../assets/icons/common/grayLogo.svg?react";
+import GrayLogo from "../../../assets/logos/grayLogo.svg?react";
 import StudyData from "./StudyData";
 import { useDispatch, useSelector } from "react-redux";
 import {

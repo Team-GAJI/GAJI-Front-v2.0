@@ -50,12 +50,7 @@ const CommunityWritePost = () => {
       //전역상태초기화 함수
       const postDetail = await communityPostAPI(postId);
       console.log(postDetail);
-      navigate("/community/detail", {
-        state: {
-          postDetail: postDetail,
-          postId: postId,
-        },
-      });
+      navigate(`/community/detail/${response.result.postId}`);
       // 제목, 내용 초기화
       dispatch(setTitle(""));
       dispatch(setBody(""));

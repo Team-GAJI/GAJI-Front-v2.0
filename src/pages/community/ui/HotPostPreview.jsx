@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { communityPostAPI } from "../../community-detail/api/communityPostAPI";
-import PostBackground from "../../../assets/images/common/studyExampleImage.png";
+import ThumbnailLogo from "../../../assets/logos/ThumbnailLogo.svg?react";
 
 const HotPostPreview = ({ key, postId, title, background, tags }) => {
   // useNavigate
@@ -13,12 +13,7 @@ const HotPostPreview = ({ key, postId, title, background, tags }) => {
     try {
       const postDetail = await communityPostAPI(postId);
       console.log(postDetail);
-      navigate("/community/detail", {
-        state: {
-          postDetail: postDetail,
-          postId: postId,
-        },
-      });
+      navigate(`/community/detail/${postId}`);
     } catch (error) {
       console.error("스터디 생성 중 오류 발생:", error);
       // 필요에 따라 오류 처리 로직을 추가할 수 있습니다.
@@ -26,11 +21,13 @@ const HotPostPreview = ({ key, postId, title, background, tags }) => {
   };
 
   // 기본 썸네일 기능
-  const backgroundImage = background || PostBackground;
+  const backgroundImage = background;
 
   return (
     <PostWrapper key={key} onClick={() => handleSubmit()}>
-      <Background background={backgroundImage}></Background>
+      <Background background={backgroundImage}>
+        <StyledThumbnailLogo background={backgroundImage} />
+      </Background>
       <ContentWrapper>
         <Title>{title}</Title>
         <TagWrapper>
@@ -61,6 +58,14 @@ const Background = styled.div`
   height: 60%;
   background-image: ${({ background }) => `url(${background})`};
   background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledThumbnailLogo = styled(ThumbnailLogo)`
+  width: 2rem;
+  display: ${(props) => (props.background ? "none" : "flex")};
 `;
 
 const ContentWrapper = styled.div`
