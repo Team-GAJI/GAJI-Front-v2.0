@@ -197,10 +197,10 @@ const CommunitySelectBox = ({
                   미완료 질문
                 </StyledOption>
                 <StyledOption
-                  onClick={() => handleFilterSelect("완료 질문")}
-                  isSelected={selectedFilterOption === "완료 질문"}
+                  onClick={() => handleFilterSelect("해결 완료")}
+                  isSelected={selectedFilterOption === "해결 완료"}
                 >
-                  완료 질문
+                  해결 완료
                 </StyledOption>
               </>
             )}

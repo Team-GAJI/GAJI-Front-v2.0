@@ -46,10 +46,14 @@ const CommunityHomePosts = () => {
     }
   };
   const handleFilter = (option) => {
-    if (option === "모집 중" || option === "미완료 질문") {
+    if (option === "모집 중") {
       setFilterOption("모집중");
-    } else {
+    } else if (option === "모집 완료") {
       setFilterOption("모집완료");
+    } else if (option === "미완료 질문") {
+      setFilterOption("미완료질문");
+    } else {
+      setFilterOption("해결완료");
     }
   };
 

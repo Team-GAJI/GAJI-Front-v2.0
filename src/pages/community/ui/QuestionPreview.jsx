@@ -73,7 +73,7 @@ const PostState = styled.div`
   width: 8em;
   height: 1.7em;
   background-color: ${({ state }) =>
-    state === "모집완료" ? "#A2A3B2" : "#8E59FF"};
+    state === "해결완료" ? "#A2A3B2" : "#8E59FF"};
   color: white;
   font-size: 0.7em;
   line-height: 1.7em;

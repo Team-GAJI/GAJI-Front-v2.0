@@ -21,6 +21,7 @@ import {
   communityRemoveBookmark,
 } from "./api/communityInteractionAPI";
 import { communityPostAPI } from "./api/communityPostAPI";
+import { communityStatusAPI } from "./api/communithyStatusAPI";
 
 // 세자리마다 콤마 기능
 // const formatNumberWithCommas = (number) => {
@@ -55,7 +56,7 @@ const CommunityDetailPage = () => {
         setLikeCount(postDetail.likeCnt); // 좋아요 개수 설정
         setBookMarkState(postDetail.bookMarkStatus); // 서버로부터 북마크 상태를 가져와 설정
         setBookMarkCount(postDetail.bookmarkCnt); // 북마크 개수 설정
-        setSelectedOption(postDetail.status);
+        setSelectedOption(postDetail.status); // 게시글 상태 설정
       } catch (error) {
         console.error("게시물 정보를 불러오는 중 오류 발생:", error);
       }
@@ -115,9 +116,14 @@ const CommunityDetailPage = () => {
   };
 
   // 게시글 상태 옵션 선택
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
-    setIsOptionVisible(false);
+  const handleOptionSelect = async (option) => {
+    try {
+      await communityStatusAPI(postId); // API 호출
+      setSelectedOption(option); // 성공하면 상태 업데이트
+      setIsOptionVisible(false); // 옵션 리스트 닫기
+    } catch (error) {
+      alert("게시글 상태 변경 중 오류가 발생했습니다.");
+    }
   };
 
   // 작성자 정보 모달 기능
@@ -297,8 +303,8 @@ const CommunityDetailPage = () => {
                         </PostStateOption>
                       </>
                     )}
-                    {/* 미완료질문 / 완료질문일 경우 */}
-                    {["미완료질문", "완료질문"].includes(selectedOption) && (
+                    {/* 미완료질문 / 해결완료일 경우 */}
+                    {["미완료질문", "해결완료"].includes(selectedOption) && (
                       <>
                         <PostStateOption
                           onClick={() => handleOptionSelect("미완료질문")}
@@ -307,10 +313,10 @@ const CommunityDetailPage = () => {
                           미완료 질문
                         </PostStateOption>
                         <PostStateOption
-                          onClick={() => handleOptionSelect("완료질문")}
-                          isSelected={selectedOption === "완료질문"}
+                          onClick={() => handleOptionSelect("해결완료")}
+                          isSelected={selectedOption === "해결완료"}
                         >
-                          완료 질문
+                          해결 완료
                         </PostStateOption>
                       </>
                     )}
