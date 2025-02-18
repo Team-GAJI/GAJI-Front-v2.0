@@ -4,52 +4,10 @@ import PrevMonth from "../../../assets/icons/common/prevmonth.svg?react";
 import NextMonth from "../../../assets/icons/common/nextmonth.svg?react";
 import { Color } from "../../../components/container/Color";
 
-const StudyManageWeekCalendar = ({
-  startDate: initialStartDate,
-  endDate: initialEndDate,
-  onStartDateChange,
-  onEndDateChange,
-}) => {
+const StudyManageWeekCalendar = ({ onStartDateChange, onEndDateChange }) => {
   const [date, setDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(initialStartDate || null);
-  const [endDate, setEndDate] = useState(initialEndDate || null);
-
-  useEffect(() => {
-    setStartDate(initialStartDate);
-    setEndDate(initialEndDate);
-  }, [initialStartDate, initialEndDate]);
-
-  const handleDateClick = (day) => {
-    const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
-
-    if (!startDate) {
-      setStartDate(selectedDate);
-      setEndDate(null);
-      onStartDateChange(selectedDate);
-    } else if (!endDate) {
-      if (selectedDate < startDate) {
-        setStartDate(selectedDate);
-        setEndDate(null);
-        onStartDateChange(selectedDate);
-      } else {
-        setEndDate(selectedDate);
-        onEndDateChange(selectedDate);
-      }
-    } else {
-      setStartDate(selectedDate);
-      setEndDate(null);
-      onStartDateChange(selectedDate);
-    }
-  };
-
-  // const [date, setDate] = useState(new Date());
-  // const [startDate, setStartDate] = useState(null);
-  // const [endDate, setEndDate] = useState(null);
-
-  // useEffect(() => {
-  //     setSelectedStartDate(startDate);
-  //     setSelectedEndDate(endDate);
-  // }, [startDate, endDate]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const monthName = date.toLocaleString("default", { month: "long" });
   const year = date.getFullYear();
@@ -82,28 +40,30 @@ const StudyManageWeekCalendar = ({
     return currentDate >= startDate && currentDate <= endDate;
   };
 
-  // const handleDateClick = (day) => {
-  //     const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
+  const handleDateClick = (day) => {
+    const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
+    // 선택한 날이 -1의 값으로 입력된다.
 
-  //     if (!startDate) {
-  //         setStartDate(selectedDate);
-  //         setEndDate(null);
-  //         onStartDateChange(selectedDate); // Start date 변경 알림
-  //     } else if (!endDate) {
-  //         if (selectedDate < startDate) {
-  //             setStartDate(selectedDate);
-  //             setEndDate(null);
-  //             onStartDateChange(selectedDate); // Start date 변경 알림
-  //         } else {
-  //             setEndDate(selectedDate);
-  //             onEndDateChange(selectedDate); // End date 변경 알림
-  //         }
-  //     } else {
-  //         setStartDate(selectedDate);
-  //         setEndDate(null);
-  //         onStartDateChange(selectedDate); // Start date 변경 알림
-  //     }
-  // };
+
+    if (!startDate) {
+      setStartDate(selectedDate);
+      setEndDate(null);
+      onStartDateChange(selectedDate); // Start date 변경 알림
+    } else if (!endDate) {
+      if (selectedDate < startDate) {
+        setStartDate(selectedDate);
+        setEndDate(null);
+        onStartDateChange(selectedDate); // Start date 변경 알림
+      } else {
+        setEndDate(selectedDate);
+        onEndDateChange(selectedDate); // End date 변경 알림
+      }
+    } else {
+      setStartDate(selectedDate);
+      setEndDate(null);
+      onStartDateChange(selectedDate); // Start date 변경 알림
+    }
+  };
 
   // 이전 달의 날짜 추가
   for (let i = firstDayOfMonth; i > 0; i--) {
@@ -165,11 +125,11 @@ const StudyManageWeekCalendar = ({
     <CalendarWrapper>
       <CalendarWrapper1>
         <Header>
-          <StyledPrevMonth onClick={prevMonth} />
+          <StyledPrevMonth onClick={() => prevMonth()} />
           <MonthYear>
             {`${year}년`} <Color>{`${monthName}`}</Color>
           </MonthYear>
-          <StyledNextMonth onClick={nextMonth} />
+          <StyledNextMonth onClick={() => nextMonth()} />
         </Header>
         <Grid>
           {days.map((day, index) => (

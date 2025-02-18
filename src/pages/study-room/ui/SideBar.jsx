@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const SideBar = ({ roomId, week, setCurrentWeek, studyInfo, isWriter }) => {
   const navigate = useNavigate();
   const handleManage = () => {
-    navigate("/study/manage", {
+    navigate("/study/manage-week", {
       state: { roomId: roomId, studyInfo: studyInfo, week: week },
     });
   };

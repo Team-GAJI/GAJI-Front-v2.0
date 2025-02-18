@@ -29,15 +29,20 @@ const StudyManageWeekPeriod = ({
           : null,
       );
     }
-  }, [selectedWeek, weekData]); // selectedWeek, weekData가 변경될 때마다 실행
+  }, [selectedWeek, weekData]); 
 
   const formatDate = (date) => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      return "날짜를 선택해주세요";
-    }
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${month}월 ${day}일`;
+    // if (!(date instanceof Date) || isNaN(date.getTime())) {
+    //   return "날짜를 선택해주세요";
+    // }
+    // const month = date.getMonth() + 1;
+    // const day = date.getDate();
+    // return `${month}월 ${day}일`;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const handleStudyStartDateChange = (date) => {
@@ -121,6 +126,11 @@ const ComponentWrapper = styled.div`
   display: flex;
   align-items: center;
 
+  @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1em;
+      padding-bottom: 1em;
+    }
 `;
 
 const RightWrapper = styled.div`
@@ -129,6 +139,14 @@ const RightWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 2em;
+
+   @media (max-width: 768px) {
+    margin-top: 2em;
+    align-items: center;
+    border: none;
+    width: 100%;
+  }
+
 `;
 
 const Title = styled.div`
@@ -182,15 +200,11 @@ const Period = styled.div`
 `;
 
 const MainText = styled.div`
-  // color: #8e59ff;
-  // font-size: 1.25em;
-  // font-weight: 800;
-  // text-align: left;
-  // margin-left: -22.5em;
-  // @media (max-width: 768px) {
-  //   font-size: 1.1em;
-  //   margin-left: -27em;
-  // }
+  
+  @media (max-width: 768px) {
+    font-size: 1.1em;
+    margin-left: -27em;
+  }
     color: #8e59ff;
   font-size: 1.25em;
   font-weight: 800;
@@ -200,14 +214,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.625em;
-  // display: flex;
-  // flex-direction: column;
-  gap: 0.625em;
   margin: 1em 0;
-  // @media (max-width: 786px) {
-  //   align-items: center;
-  //   margin-left: 2em; /* 이거 확인*/
-  // }
 `;
 const ContentWrapper = styled.div`
   margin: 3.5em 0 3.5em 0em;

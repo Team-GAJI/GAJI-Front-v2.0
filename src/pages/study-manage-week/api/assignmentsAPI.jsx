@@ -1,9 +1,9 @@
 import { api } from "../../../app/api";
 
-export const assignmentsAPI = async (roomId, week, assignmentsInfo) => {
+export const assignmentsAPI = async (roomId, weeks, assignmentsInfo) => {
   try {
     const response = await api.post(
-      `/api/study-rooms/assignments/${roomId}/${week}`,
+      `/study-rooms/assignments/${roomId}/${weeks}`,
       {
         bodyList: assignmentsInfo.assignments,
       },
