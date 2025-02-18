@@ -3,7 +3,6 @@ import styled from "styled-components";
 import ReportCheck from "../../assets/icons/studyDetail/reportCheck.svg?react";
 import PostWriterInfo from "./ui/PostWriterInfo";
 import BackgroundImage from "../../assets/images/community/communityBackground.png";
-import UserProfileImg from "../../assets/images/community/userProfile.png";
 // import BookMarkIcon from "../../assets/icons/communityPost/postBookMark.svg?react";
 import ShareIcon from "../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../assets/icons/communityPost/postLike.svg?react";
@@ -151,6 +150,11 @@ const CommunityDetailPage = () => {
     }
   };
 
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
+
   return (
     <>
       {postDetail && (
@@ -177,12 +181,12 @@ const CommunityDetailPage = () => {
             <TitleWrapper>
               {/* 게시글 상세정보 */}
               <TitleDetail>
-                <StyledUserProfileImg
+                <UserProfile
                   onMouseEnter={showWriterInfo}
                   onMouseLeave={hideWriterInfo}
-                  src={UserProfileImg}
-                  alt="user profile"
-                />
+                >
+                  {getFirstChar(postDetail.userNickname)}
+                </UserProfile>
                 <Writer
                   onMouseEnter={showWriterInfo}
                   onMouseLeave={hideWriterInfo}
@@ -427,10 +431,16 @@ const TitleDetail = styled.div`
   line-height: 1.5em;
 `;
 
-const StyledUserProfileImg = styled.img`
-  padding-right: 0.6em;
-  width: 1.5em;
+const UserProfile = styled.div`
+  border-radius: 30px;
+  margin-right: 0.6em;
+  width: 1.55em;
   height: 1.55em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
   cursor: pointer;
 `;
 

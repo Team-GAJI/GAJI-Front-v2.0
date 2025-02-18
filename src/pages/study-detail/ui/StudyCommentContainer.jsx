@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import ProfileImg from "../../../assets/images/community/userProfile.png";
 import StudyComment from "./StudyComment";
 // import { dummyStudyComments } from './DummyStudyComments';
 // import Loading from '../common/Loading';
@@ -12,6 +11,7 @@ import {
   communityWriteCommentAPI,
   communityViewCommentAPI,
 } from "../../login/api/commentAPI";
+import { userInfoAPI } from "../../mypage/api/userInfoAPI";
 
 const StudyCommentContainer = ({ roomId, postId, type, setCommentCount }) => {
   // state 관리
@@ -20,6 +20,7 @@ const StudyCommentContainer = ({ roomId, postId, type, setCommentCount }) => {
   // const [isLoading, setIsLoading] = useState(false);
   const [commentBody, setCommentBody] = useState(""); // 작성 중인 댓글 저장
   const [commentsList, setCommentsList] = useState([]); // 댓글 리스트
+  const [nickName, setNickName] = useState(""); // 사용자 닉네임 저장
 
   // 댓글 총 개수
   const count = commentsList.length;
@@ -85,6 +86,24 @@ const StudyCommentContainer = ({ roomId, postId, type, setCommentCount }) => {
     fetchComments();
   }, []);
 
+  // 댓글 작성자 닉네임 가져오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await userInfoAPI();
+        setNickName(userData.result.nickname);
+      } catch (error) {
+        console.error("사용자 정보를 불러오는 중 오류 발생:", error);
+      }
+    };
+    fetchUserInfo();
+  }, []);
+
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
+
   return (
     <CommentContainerWrapper>
       <TitleWrapper>
@@ -92,7 +111,7 @@ const StudyCommentContainer = ({ roomId, postId, type, setCommentCount }) => {
         <Count>총 {count}개</Count>
       </TitleWrapper>
       <InputWrapper>
-        <StyledProfileImg src={ProfileImg} alt="profile image" />
+        <UserProfile>{getFirstChar(nickName)}</UserProfile>
         <StyledInput
           placeholder="댓글을 작성해주세요"
           value={commentBody} // 입력 필드에 state 바인딩
@@ -107,7 +126,6 @@ const StudyCommentContainer = ({ roomId, postId, type, setCommentCount }) => {
           key={comment.commentId}
           writer={comment.userNickName}
           content={comment.commentBody}
-          userProfileImg={comment.profileImageUrl}
           time={comment.commentWriteDate}
         />
       ))}
@@ -151,9 +169,18 @@ const InputWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledProfileImg = styled.img`
-  width: 2.6038em;
-  height: 2.6038em;
+const UserProfile = styled.div`
+  border-radius: 30px;
+  width: 1.75em;
+  height: 1.75em;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
 `;
 
 const StyledInput = styled.input`

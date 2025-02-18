@@ -85,6 +85,14 @@ const StudyDetailHeader = ({
     }
   };
 
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
+
+  // 모집 상태 변경
+  const isClosed = recruitPostTypeEnum !== "모집 중";
+
   return (
     <HeaderWrapper>
       <ContentWrapper>
@@ -108,12 +116,18 @@ const StudyDetailHeader = ({
           <TitleWrapper>
             <TitleDetail>
               <Wrapper>
-                <StyledUserProfileImg
+                {/* <StyledUserProfileImg
                   onMouseEnter={showWriterInfo}
                   onMouseLeave={hideWriterInfo}
                   src={UserProfileImg}
                   alt="user profile"
-                />
+                /> */}
+                <UserProfile
+                  onMouseEnter={showWriterInfo}
+                  onMouseLeave={hideWriterInfo}
+                >
+                  {getFirstChar(nickName)}
+                </UserProfile>
                 <Writer
                   onMouseEnter={showWriterInfo}
                   onMouseLeave={hideWriterInfo}
@@ -146,8 +160,11 @@ const StudyDetailHeader = ({
             <Title>{title}</Title>
             <Category>{category}</Category>
             <InteractionWrapper>
-              <JoinButton onClick={() => handleRecruit()}>
-                스터디 가지기
+              <JoinButton
+                isClosed={isClosed}
+                onClick={isClosed ? null : handleRecruit}
+              >
+                {isClosed ? "스터디 모집 완료" : "스터디 가지기"}
               </JoinButton>
               {/* <BookMarkWrapper>
                 <StyledBookMarkIcon
@@ -203,6 +220,7 @@ export default StudyDetailHeader;
 
 const Wrapper = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const RowWrapper = styled.div`
@@ -272,10 +290,16 @@ const TitleDetail = styled.div`
   }
 `;
 
-const StyledUserProfileImg = styled.img`
-  padding-right: 0.6em;
-  width: 1;
+const UserProfile = styled.div`
+  border-radius: 30px;
+  margin-right: 0.6em;
+  width: 1.55em;
   height: 1.55em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
   cursor: pointer;
 `;
 
@@ -336,17 +360,23 @@ const JoinButton = styled.div`
   width: 15.3125em;
   height: 2.3125em;
   line-height: 2.3015em;
-  background-color: #8e59ff;
+  background-color: ${({ isClosed }) => (isClosed ? "#C1C7CD" : "#8E59FF")};
   color: white;
   font-size: 1.2308em;
   font-weight: bold;
   display: flex;
   justify-content: center;
-  cursor: pointer;
+  align-items: center;
+  cursor: ${({ isClosed }) => (isClosed ? "default" : "pointer")};
+  pointer-events: ${({ isClosed }) => (isClosed ? "none" : "auto")};
+
   &:hover {
-    box-shadow: 0 0.2em 1em rgba(22, 26, 63, 0.2);
+    box-shadow: ${({ isClosed }) =>
+      isClosed ? "none" : "0 0.2em 1em rgba(22, 26, 63, 0.2)"};
   }
+
   transition: all 0.3s ease;
+
   @media (max-width: 768px) {
     width: 11em;
     font-size: 0.8125em;
