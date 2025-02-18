@@ -24,6 +24,7 @@ import { current } from "@reduxjs/toolkit";
 
 const StudyManageWeekPage = () => {
   const [weeks, setWeeks] = useState([0]);
+
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
   const sidebarRef = useRef(null);
 
@@ -34,15 +35,17 @@ const StudyManageWeekPage = () => {
   const { weeksData = [] } = useSelector((state) => state.studyWeek);
   const [selectedWeek, setSelectedWeek] = useState(0);
   // const roomId = location.state?.roomId || null;
-
+  
   const location = useLocation();
   const roomId = location.state?.roomId;
   const weekCount = location.state?.week; //주차 받아오기
+
   console.log(roomId);
+  console.log("내가 선택한 주차 weeks",selectedWeek);
 
   useEffect(() => {
-    console.log("Received roomId:", roomId);
-    console.log("Received week:", weekCount);
+    console.log("roomId:", roomId);
+    console.log("week:", weekCount);
   }, [roomId, weekCount]);
 
   useEffect(() => {
@@ -59,7 +62,7 @@ const StudyManageWeekPage = () => {
     if (weeksData.length === 0) {
       const initialWeekData = [
         {
-          basicInfo: { name: "1주차", description: "" },
+          basicInfo: { title: "1주차", description: "" },
           tasks: [],
           studyPeriodStartDate: null,
           studyPeriodEndDate: null,
@@ -74,7 +77,7 @@ const StudyManageWeekPage = () => {
 
   const handleSave = useCallback(async () => {
     const currentWeekData = weeksData[selectedWeek];
-    alert("저장완료"); // -> 서버에 전송 후에 저장하기 나와야함
+    alert("저장완료"); // -> 서버에 전송 후에 저장하기 나오게...
     if (!currentWeekData) {
       console.error("현재 주차 데이터가 없습니다.");
       return;
@@ -82,14 +85,26 @@ const StudyManageWeekPage = () => {
 
     // 이름 및 설명
     const weekInfo = {
-      name: currentWeekData.basicInfo.name,
+      title: currentWeekData.basicInfo.title,
       description: currentWeekData.basicInfo.description,
     };
-
+    
     // 기한 정보
+    // const periodInfo = {
+    //   studyPeriodStartDate: currentWeekData.studyPeriodStartDate,
+    //   studyPeriodEndDate: currentWeekData.studyPeriodEndDate,
+    // };
+
+    // 날짜 -1 수정 -> 네트워크 창에는 잘 전송되는 거 확인가능/ 콘솔창에서는 X -> 수정(급x)
+    let studyPeriodStartDate = new Date(currentWeekData.studyPeriodStartDate);
+    let studyPeriodEndDate = new Date(currentWeekData.studyPeriodEndDate);
+    
+    // 날짜가 제대로 설정되었는지 확인하고 하루를 추가
+    studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1); // 1일 더하기
+    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); // 1일 더하기
     const periodInfo = {
-      studyPeriodStartDate: currentWeekData.studyPeriodStartDate,
-      studyPeriodEndDate: currentWeekData.studyPeriodEndDate,
+      studyPeriodStartDate: studyPeriodStartDate.toISOString(),
+      studyPeriodEndDate: studyPeriodEndDate.toISOString(),
     };
 
     // 과제 등록
@@ -139,7 +154,7 @@ const StudyManageWeekPage = () => {
 
   const handleWeekDataChange = (field, value) => {
     const currentWeekData = weeksData[selectedWeek] || {
-      basicInfo: { name: "", description: "" },
+      basicInfo: { title: "", description: "" },
       tasks: [],
       studyPeriodStartDate: null,
       studyPeriodEndDate: null,
@@ -154,7 +169,7 @@ const StudyManageWeekPage = () => {
         [field]: value,
       },
       // 스터디 기한 업데이트
-      ...(field === "studyPeriodStartDate" && { studyPeriodStartDate: value }),
+      ...(field === "studyPeriodStartDate" && { studyPeriodStartDate: value }),      
       ...(field === "studyPeriodEndDate" && { studyPeriodEndDate: value }),
       // 과제 업데이트 -> 0부터 시작
       ...(field === "assignments" && { assignments: value }), // assignments 업데이트 추가
@@ -204,7 +219,7 @@ const StudyManageWeekPage = () => {
 
     // 새로운 주차 데이터 초기화
     const newWeekData = {
-      basicInfo: { name: "", description: "" },
+      basicInfo: { title: "", description: "" },
       tasks: [],
       studyPeriodStartDate: null,
       studyPeriodEndDate: null,
@@ -259,7 +274,7 @@ const StudyManageWeekPage = () => {
             기본정보
           </BasicInfoButton> */}
           {weeks.map((week, index) => (
-            <React.Fragment key={week}>
+            <React.Fragment key={week} >
               <SidebarButton1
                 className={index === weeks.length - 1 ? "last-week" : ""}
                 bold={index === selectedWeek}

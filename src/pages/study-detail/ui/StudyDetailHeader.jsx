@@ -4,14 +4,15 @@ import ReportCheck from "../../../assets/icons/studyDetail/reportCheck.svg?react
 import StudyPostWriterInfo from "./StudyPostWriterInfo";
 import BackgroundImage from "../../../assets/images/community/communityBackground.png";
 import UserProfileImg from "../../../assets/images/community/userProfile.png";
-import BookMarkIcon from "../../../assets/icons/communityPost/postBookMark.svg?react";
+// import BookMarkIcon from "../../../assets/icons/communityPost/postBookMark.svg?react";
+import ShareIcon from "../../../assets/icons/communityPost/postShare.svg?react";
 import LikeIcon from "../../../assets/icons/communityPost/postLike.svg?react";
 import ReportIcon from "../../../assets/icons/communityPost/postReport.svg?react";
-// import ThumbNailImg from "../../../assets/images/studyDetail/thumbNailImg.png";
+import GrayLogo from "../../../assets/logos/grayLogo.svg?react";
 import ReportModal from "./ReportModal";
 import { ContentWrapper } from "../../../components/common/MediaWrapper";
 import { studyRecruitAPI } from "../api/studyRecruitAPI";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // 세자리마다 콤마 기능
 // const formatNumberWithCommas = (number) => {
@@ -38,6 +39,7 @@ const StudyDetailHeader = ({
   const [isWriterInfoVisible, setIsWriterInfoVisible] = useState(false);
   const [isReportModalVisible, setIsReportModalVisible] = useState(false);
   const [isReportNoticeVisible, setIsReportNoticeVisible] = useState(false);
+  const [isShareNoticeVisible, setIsShareNoticeVisible] = useState(false);
 
   const showWriterInfo = () => setIsWriterInfoVisible(true);
   const hideWriterInfo = () => setIsWriterInfoVisible(false);
@@ -45,11 +47,28 @@ const StudyDetailHeader = ({
   const showReportModal = () => setIsReportModalVisible(true);
   const hideReportModal = () => setIsReportModalVisible(false);
 
+  const location = useLocation();
+
+  // 신고 완료 모달 함수
   const showReportNotice = () => {
     setIsReportNoticeVisible(true);
     setTimeout(() => {
       setIsReportNoticeVisible(false);
     }, 2000);
+  };
+
+  // 공유 완료 모달 함수
+  const baseUrl = "http://localhost:3000";
+  const showShareNotice = async (url) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setIsShareNoticeVisible(true);
+      setTimeout(() => {
+        setIsShareNoticeVisible(false);
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const navigate = useNavigate();
@@ -70,10 +89,19 @@ const StudyDetailHeader = ({
     <HeaderWrapper>
       <ContentWrapper>
         <RowWrapper>
+          {/* 신고 완료 모달 */}
           <ReportNoticeWrapper isVisible={isReportNoticeVisible}>
             <ReportNotice>
               <StyledReportCheck />
               신고가 완료되었습니다
+            </ReportNotice>
+          </ReportNoticeWrapper>
+
+          {/* 공유 완료 모달 */}
+          <ReportNoticeWrapper isVisible={isShareNoticeVisible}>
+            <ReportNotice>
+              <StyledReportCheck />
+              주소가 복사되었습니다
             </ReportNotice>
           </ReportNoticeWrapper>
 
@@ -98,8 +126,8 @@ const StudyDetailHeader = ({
               <Wrapper>
                 <StyledBar>|</StyledBar>
                 조회 {views}
-                <StyledBar>|</StyledBar>
-                댓글 {commentCount}
+                {/* <StyledBar>|</StyledBar>
+                댓글 {commentCount} */}
               </Wrapper>
             </TitleDetail>
 
@@ -121,13 +149,13 @@ const StudyDetailHeader = ({
               <JoinButton onClick={() => handleRecruit()}>
                 스터디 가지기
               </JoinButton>
-              <BookMarkWrapper>
+              {/* <BookMarkWrapper>
                 <StyledBookMarkIcon
                   onClick={() => onInteraction("bookmark")}
                   isActive={bookmarkStatus}
                 />
                 <InteractionText>{bookmarkCnt}</InteractionText>
-              </BookMarkWrapper>
+              </BookMarkWrapper> */}
               <BookMarkWrapper>
                 <StyledLikeIcon
                   onClick={() => onInteraction("like")}
@@ -138,6 +166,14 @@ const StudyDetailHeader = ({
               <BookMarkWrapper>
                 <StyledReportIcon onClick={showReportModal} />
                 <InteractionText>신고</InteractionText>
+              </BookMarkWrapper>
+              <BookMarkWrapper>
+                <StyledShareIcon
+                  onClick={() =>
+                    showShareNotice(`${baseUrl}${location.pathname}`)
+                  }
+                />
+                <InteractionText>공유</InteractionText>
               </BookMarkWrapper>
 
               <ReportModal
@@ -151,7 +187,9 @@ const StudyDetailHeader = ({
 
           <HeaderRightWrapper>
             <PostStateButton>{recruitPostTypeEnum}</PostStateButton>
-            <ThumbNailImgWrapper imageUrl={imageUrl} />
+            <ThumbNailImgWrapper imageUrl={imageUrl}>
+              <StyledGrayLogo imageUrl={imageUrl} />
+            </ThumbNailImgWrapper>
           </HeaderRightWrapper>
         </RowWrapper>
       </ContentWrapper>
@@ -321,13 +359,13 @@ const BookMarkWrapper = styled.div`
   font-size: 1.2em;
 `;
 
-const StyledBookMarkIcon = styled(BookMarkIcon)`
-  margin-bottom: 0.1em;
-  width: 1em;
-  height: 1.3125em;
-  cursor: pointer;
-  fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
-`;
+// const StyledBookMarkIcon = styled(BookMarkIcon)`
+//   margin-bottom: 0.1em;
+//   width: 1em;
+//   height: 1.3125em;
+//   cursor: pointer;
+//   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
+// `;
 const StyledLikeIcon = styled(LikeIcon)`
   margin-bottom: 0.1em;
   width: 1.375em;
@@ -336,6 +374,12 @@ const StyledLikeIcon = styled(LikeIcon)`
   fill: ${(props) => (props.isActive ? "#8E59FF" : "none")};
 `;
 const StyledReportIcon = styled(ReportIcon)`
+  margin-bottom: 0.1em;
+  width: 1.5em;
+  height: 1.25em;
+  cursor: pointer;
+`;
+const StyledShareIcon = styled(ShareIcon)`
   margin-bottom: 0.1em;
   width: 1.5em;
   height: 1.25em;
@@ -375,6 +419,16 @@ const ThumbNailImgWrapper = styled.div`
   border-radius: 10px;
   width: 100%;
   height: 13.125em;
-  background-image: url(${(props) => props.imageUrl});
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f4f8;
+  background-image: ${(props) =>
+    props.imageUrl ? `url(${props.imageUrl}` : "none"});
   background-size: cover;
+`;
+
+const StyledGrayLogo = styled(GrayLogo)`
+  width: 2rem;
+  display: ${(props) => (props.imageUrl ? "none" : "flex")};
 `;

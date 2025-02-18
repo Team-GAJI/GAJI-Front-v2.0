@@ -7,19 +7,19 @@ const ManageWeekBasics = ({
   onWeekDataChange,
 }) => {
   const currentWeekData = weekData[selectedWeek] || {};
-  const basicInfo = currentWeekData.basicInfo || { name: "", description: "" };
+  const basicInfo = currentWeekData.basicInfo || { title: "", description: "" };
 
-  const [studyName, setStudyName] = useState(basicInfo.name || "");
+  const [studyName, setStudyName] = useState(basicInfo.title || "");
   const [studyDescription, setStudyDescription] = useState(
     basicInfo.description || "",
   );
 
   useEffect(() => {
     const updatedBasicInfo = currentWeekData.basicInfo || {
-      name: "",
+      title: "",
       description: "",
     };
-    setStudyName(updatedBasicInfo.name || "");
+    setStudyName(updatedBasicInfo.title || "");
     setStudyDescription(updatedBasicInfo.description || "");
   }, [currentWeekData]);
 
@@ -28,7 +28,7 @@ const ManageWeekBasics = ({
     const value = e.target.value;
     setStudyName(value);
     // 여기서는 업데이트된 스터디 이름만 전송
-    onWeekDataChange("name", value);
+    onWeekDataChange("title", value);
   };
 
   const handleStudyDescriptionChange = (e) => {

@@ -6,7 +6,7 @@ import StudyCommentContainer from "./ui/StudyCommentContainer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import HeightLine from "../../assets/icons/studyDetail/heightLine.svg?react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ContentWrapper } from "../../components/common/MediaWrapper";
 import {
   studyAddLike,
@@ -17,18 +17,12 @@ import {
 import { studyDetailAPI } from "./api/studyDetailAPI";
 
 const StudyDetailPage = () => {
-  const location = useLocation();
-  const { studyDetail } = location.state || {};
-  const { roomId } = location.state;
-  // 북마크, 좋아요
-  const [bookMarkState, setBookMarkState] = useState(
-    studyDetail.bookmarkStatus,
-  );
-  const [likeState, setLikeState] = useState(studyDetail.likeStatus);
-  const [bookMarkCount, setBookMarkCount] = useState(studyDetail.bookmarkCnt);
-  const [likeCount, setLikeCount] = useState(studyDetail.likeCnt);
-
-  // 댓글 개수
+  const { roomId } = useParams();
+  const [studyDetail, setStudyDetail] = useState(null);
+  const [bookMarkState, setBookMarkState] = useState(false);
+  const [likeState, setLikeState] = useState(false);
+  const [bookMarkCount, setBookMarkCount] = useState(0);
+  const [likeCount, setLikeCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
 
   // 날짜 형식을 변환하는 함수
@@ -44,7 +38,7 @@ const StudyDetailPage = () => {
     const fetchPostDetail = async () => {
       try {
         const postDetail = await studyDetailAPI(roomId);
-
+        setStudyDetail(postDetail);
         setLikeState(postDetail.likeStatus); // 서버로부터 좋아요 상태를 가져와 설정
         setLikeCount(postDetail.likeCnt); // 좋아요 개수 설정
         setBookMarkState(postDetail.bookmarkStatus); // 서버로부터 북마크 상태를 가져와 설정
@@ -185,11 +179,11 @@ const StudyDetailPage = () => {
 
             <StyledHr />
             {/* 댓글 영역 */}
-            <StudyCommentContainer
+            {/* <StudyCommentContainer
               roomId={roomId}
               type="study"
               setCommentCount={setCommentCount}
-            />
+            /> */}
           </ContentWrapper>
         </>
       )}

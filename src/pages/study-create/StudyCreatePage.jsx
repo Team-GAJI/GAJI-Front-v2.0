@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import backGroundUrl from "../../assets/images/mypage/mypageBackground.png";
@@ -6,13 +6,14 @@ import StudyInfo from "./ui/StudyInfo";
 import StudyPeriod from "./ui/StudyPeriod";
 import StudyDetail from "./ui/StudyDetail";
 import { studyCreateAPI } from "./api/studyCreateAPI";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ContentWrapper } from "../../components/common/MediaWrapper";
 import { studyDetailAPI } from "../study-detail/api/studyDetailAPI";
+import { resetStudyCreate } from "../../redux/slice/study/studyCreateSlice";
 
 const StudyCreatePage = () => {
-  // useNavigate
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Redux 관리
   const {
@@ -52,17 +53,19 @@ const StudyCreatePage = () => {
       //전역상태초기화 함수
       const studyDetail = await studyDetailAPI(response.result.roomId);
       console.log(studyDetail);
-      navigate("/study/detail", {
-        state: {
-          studyDetail: studyDetail,
-          roomId: response.result.roomId,
-        },
-      });
+      navigate(`/study/detail/${response.result.roomId}`);
     } catch (error) {
       console.error("스터디 생성 중 오류 발생:", error);
       // 필요에 따라 오류 처리 로직을 추가할 수 있습니다.
     }
   };
+
+  // 페이지 언마운트 시 초기화
+  useEffect(() => {
+    return () => {
+      dispatch(resetStudyCreate());
+    };
+  }, [dispatch]);
 
   return (
     <>

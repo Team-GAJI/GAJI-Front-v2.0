@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ roomId, week, setCurrentWeek, studyInfo }) => {
+const SideBar = ({ roomId, week, setCurrentWeek, studyInfo, isWriter }) => {
   const navigate = useNavigate();
   const handleManage = () => {
     navigate("/study/manage-week", {
@@ -24,10 +24,12 @@ const SideBar = ({ roomId, week, setCurrentWeek, studyInfo }) => {
           </React.Fragment>
         ))}
       </SidebarContainer>
-      {/* TODO : 관리자만 관리되도록  */}
-      <SidebarManageButton onClick={handleManage}>
-        스터디 관리
-      </SidebarManageButton>
+
+      {isWriter && (
+        <SidebarManageButton onClick={handleManage}>
+          스터디 관리
+        </SidebarManageButton>
+      )}
     </SidebarWrapper>
   );
 };
@@ -39,12 +41,16 @@ const SidebarContainer = styled.div`
   flex-direction: column;
   border: 0.0625em solid #a2a3b2;
   border-radius: 0.5em;
-  padding: 0.5em 0.5em;
   background-color: #fbfaff;
   box-sizing: border-box;
+  padding: 0.5em;
+
+  /* 자식이 하나만 있을 경우 padding 제거 */
+  &:has(:only-child) {
+    padding: 0;
+  }
 
   @media (max-width: 768px) {
-    padding: 0em 0em;
     font-size: 1em;
     border: none;
     flex-direction: row;
@@ -60,7 +66,7 @@ const SidebarManageButton = styled.button`
   color: #fff;
   border-radius: 0.5em;
   font-weight: 700;
-  padding: 0.75em;
+  height: 36px;
   margin-top: 0.625em;
   box-sizing: border-box;
   @media (max-width: 768px) {
@@ -73,6 +79,7 @@ const SidebarButton = styled.button`
   color: #a2a3b2;
   font-weight: 1.125em;
   padding: 0.6em 0.625em;
+  height: 36px;
   text-align: center;
   border: 1px solid transparent;
   cursor: pointer;
@@ -82,8 +89,6 @@ const SidebarButton = styled.button`
     border: 1px solid #8e59ff;
     border-radius: 0.5em;
     color: #8e59ff;
-    margin-left: 0.4em;
-    margin-right: 0.4em;
   }
 
   @media (max-width: 768px) {
@@ -104,6 +109,7 @@ const SidebarWrapper = styled.div`
   gap: 1.25em;
   position: fixed;
   left: 5%;
+  margin-top: 20px;
 
   @media (max-width: 768px) {
     position: sticky;

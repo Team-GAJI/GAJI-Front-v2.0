@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import {
   setBody,
 } from "../../redux/slice/community/communityWriteSlice";
 import { communityPostAPI } from "../../pages/community-detail/api/communityPostAPI";
+import { resetPostCreate } from "../../redux/slice/community/communityWriteSlice";
 
 const CommunityWritePost = () => {
   // 상태 관리
@@ -49,12 +50,7 @@ const CommunityWritePost = () => {
       //전역상태초기화 함수
       const postDetail = await communityPostAPI(postId);
       console.log(postDetail);
-      navigate("/community/detail", {
-        state: {
-          postDetail: postDetail,
-          postId: postId,
-        },
-      });
+      navigate(`/community/detail/${response.result.postId}`);
       // 제목, 내용 초기화
       dispatch(setTitle(""));
       dispatch(setBody(""));
@@ -63,6 +59,13 @@ const CommunityWritePost = () => {
       // 필요에 따라 오류 처리 로직을 추가할 수 있습니다.
     }
   };
+
+  // 페이지 언마운트 시 초기화
+  useEffect(() => {
+    return () => {
+      dispatch(resetPostCreate());
+    };
+  }, [dispatch]);
 
   // 제목 입력
   const handleTitleChange = (e) => {
