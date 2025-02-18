@@ -3,6 +3,10 @@ import styled from "styled-components";
 import StudyCreateCalendar from "./StudyManageWeekCalendar";
 import { useDispatch } from "react-redux";
 import { setWeekData } from "../../../redux/slice/studymanageweek/studymanageweekSlice.jsx";
+// 오류
+// 1. 시작날, 마지막 날 -1 값으로 저장된다.
+// 2. 서버값으로 전송이 되는지 확인하고 저장완료가 먼저 나옴 이거 수정
+// 3. 주차를 추가 -> 저장 -> 새로고침/다시 들어오면 사라진다. -> 추가한 week 저장
 
 const StudyManageWeekPeriod = ({
   selectedWeek,

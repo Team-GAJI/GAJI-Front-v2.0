@@ -45,7 +45,7 @@ const StudyRoomPage = () => {
       />
       <ContentWrapper>
         <MainContent>
-          <FirstNoticeSquare />
+          {/* <FirstNoticeSquare /> */}
           <WeekCurriculum
             studyInfo={studyInfo}
             roomId={roomId}
@@ -55,7 +55,7 @@ const StudyRoomPage = () => {
       </ContentWrapper>
       <div
         onClick={() =>
-          navigate("/study/manage", {
+          navigate("/study/manage-week", {
             state: { roomId: roomId, week: weekCount },
           })
         }

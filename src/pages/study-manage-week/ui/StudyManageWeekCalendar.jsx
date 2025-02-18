@@ -10,9 +10,26 @@ const StudyManageWeekCalendar = ({
   onStartDateChange,
   onEndDateChange,
 }) => {
+
+
   const [date, setDate] = useState(new Date());
   const [startDate, setStartDate] = useState(initialStartDate || null);
   const [endDate, setEndDate] = useState(initialEndDate || null);
+
+  const monthName = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+  const days = ["S", "M", "T", "W", "T", "F", "S"];
+
+  const currentMonth = date.getMonth();
+  const currentYear = date.getFullYear();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  const prevMonthLastDate = new Date(currentYear, currentMonth, 0).getDate();
+  const nextMonthStartDay = (firstDayOfMonth + daysInMonth) % 7;
+
+  const cells = [];
+  const today = new Date();
 
   useEffect(() => {
     setStartDate(initialStartDate);
@@ -51,20 +68,6 @@ const StudyManageWeekCalendar = ({
   //     setSelectedEndDate(endDate);
   // }, [startDate, endDate]);
 
-  const monthName = date.toLocaleString("default", { month: "long" });
-  const year = date.getFullYear();
-  const days = ["S", "M", "T", "W", "T", "F", "S"];
-
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  const prevMonthLastDate = new Date(currentYear, currentMonth, 0).getDate();
-  const nextMonthStartDay = (firstDayOfMonth + daysInMonth) % 7;
-
-  const cells = [];
-  const today = new Date();
 
   const isDateSelected = (day) => {
     const currentDate = new Date(date.getFullYear(), date.getMonth(), day);
@@ -82,28 +85,6 @@ const StudyManageWeekCalendar = ({
     return currentDate >= startDate && currentDate <= endDate;
   };
 
-  // const handleDateClick = (day) => {
-  //     const selectedDate = new Date(date.getFullYear(), date.getMonth(), day);
-
-  //     if (!startDate) {
-  //         setStartDate(selectedDate);
-  //         setEndDate(null);
-  //         onStartDateChange(selectedDate); // Start date 변경 알림
-  //     } else if (!endDate) {
-  //         if (selectedDate < startDate) {
-  //             setStartDate(selectedDate);
-  //             setEndDate(null);
-  //             onStartDateChange(selectedDate); // Start date 변경 알림
-  //         } else {
-  //             setEndDate(selectedDate);
-  //             onEndDateChange(selectedDate); // End date 변경 알림
-  //         }
-  //     } else {
-  //         setStartDate(selectedDate);
-  //         setEndDate(null);
-  //         onStartDateChange(selectedDate); // Start date 변경 알림
-  //     }
-  // };
 
   // 이전 달의 날짜 추가
   for (let i = firstDayOfMonth; i > 0; i--) {

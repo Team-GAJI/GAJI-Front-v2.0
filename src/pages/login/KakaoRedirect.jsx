@@ -13,9 +13,7 @@ const KakaoRedirect = () => {
 
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
-      //이부분 수정
-      localStorage.setItem("userId", 1);
-      // getSetUserId();
+      getSetUserId();
 
       // 메인 페이지로 이동
       navigate("/");

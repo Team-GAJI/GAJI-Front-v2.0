@@ -74,7 +74,7 @@ const StudyManageWeekPage = () => {
 
   const handleSave = useCallback(async () => {
     const currentWeekData = weeksData[selectedWeek];
-    alert("저장완료");
+    alert("저장완료"); // -> 서버에 전송 후에 저장하기 나와야함
     if (!currentWeekData) {
       console.error("현재 주차 데이터가 없습니다.");
       return;
@@ -156,7 +156,7 @@ const StudyManageWeekPage = () => {
       // 스터디 기한 업데이트
       ...(field === "studyPeriodStartDate" && { studyPeriodStartDate: value }),
       ...(field === "studyPeriodEndDate" && { studyPeriodEndDate: value }),
-      // 과제 업데이트
+      // 과제 업데이트 -> 0부터 시작
       ...(field === "assignments" && { assignments: value }), // assignments 업데이트 추가
 
       // assignments: field === 'assignments' ? value : currentWeekData.assignments,
@@ -178,11 +178,6 @@ const StudyManageWeekPage = () => {
       }),
     );
   };
-
-  //사이드 버튼 주차 관련 코드들
-  // const handleButtonClick = () => {
-  //   navigate("/study/manage");
-  // };
 
   const handleWeekSelect = (index) => {
     setSelectedWeek(index);
@@ -258,6 +253,7 @@ const StudyManageWeekPage = () => {
             roomId={roomId}
           />
         </ContentWrapper70>
+        
         <Sidebar1 ref={sidebarRef}>
           {/* <BasicInfoButton onClick={() => navigate("/study/manage")}>
             기본정보
