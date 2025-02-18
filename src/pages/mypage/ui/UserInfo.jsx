@@ -6,22 +6,31 @@ import defaultProfileImage from "../../../assets/images/mypage/userProfile.png";
 import { getNickNameAPI } from "../api/getNickNameAPI";
 
 const UserInfo = forwardRef(({ userInfo }, ref) => {
-  console.log(userInfo);
   const [isEditing, setIsEditing] = useState(false);
+  const [nickname, setNickname] = useState(userInfo.nickname || "");
+  const [localUserInfo, setLocalUserInfo] = useState(userInfo);
+
   const profileImage = useMemo(
-    () => userInfo.profileImagePth || defaultProfileImage,
+    () => localUserInfo.profileImagePth || defaultProfileImage,
+    [localUserInfo.profileImagePth],
   );
 
   const toggleEditingMode = async () => {
     if (isEditing) {
-      if (!userInfo.nickname.trim()) {
+      if (!nickname.trim()) {
         alert("닉네임을 입력해주세요.");
         return;
       }
 
       try {
-        const response = await getNickNameAPI(userInfo.nickname);
+        const response = await getNickNameAPI(nickname);
         alert(response.message || "닉네임이 수정되었습니다!");
+
+        // ✅ 내부 상태를 변경하여 UI 반영
+        setLocalUserInfo((prev) => ({
+          ...prev,
+          nickname: nickname,
+        }));
       } catch (error) {
         console.error("닉네임 수정 중 오류 발생:", error);
         alert(
@@ -34,40 +43,33 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
     setIsEditing(!isEditing);
   };
 
-  const handleNameChange = (event) => {
-    setUserDetails((prevDetails) => ({
-      ...prevDetails,
-      userName: event.target.value,
-    }));
-  };
-
   return (
     <UserWrapper ref={ref}>
-      <RowWrapper2>
+      <RowWrapper>
         <UserImage style={{ backgroundImage: `url(${profileImage})` }} />
-        <>{userInfo.userName}</>
         <ColumnWrapper>
           {isEditing ? (
-            <UserNameInput
-              type="text"
-              value={userInfo.nickname}
-              onChange={handleNameChange}
-              autoFocus
-            />
+            <>
+              <UserNameInput
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                autoFocus
+              />
+              <NameEditButton onClick={toggleEditingMode}>
+                수정 완료
+              </NameEditButton>
+            </>
           ) : (
-            <UserName>{userInfo?.nickname} 님</UserName>
+            <>
+              <UserName>{localUserInfo.nickname} 님</UserName>
+              <NameEditButton onClick={toggleEditingMode}>
+                닉네임 수정
+              </NameEditButton>
+            </>
           )}
-          <UserGrade>
-            {userInfo?.email ? userInfo?.email : "이메일 API 필요"}
-          </UserGrade>
-          <WelcomeText>마이페이지에 오신 것을 환영합니다!</WelcomeText>
         </ColumnWrapper>
-      </RowWrapper2>
-      <ColumnWrapper>
-        <NameEditButton onClick={toggleEditingMode}>
-          {isEditing ? "수정 완료" : "닉네임 수정"}
-        </NameEditButton>
-      </ColumnWrapper>
+      </RowWrapper>
     </UserWrapper>
   );
 });
@@ -76,12 +78,13 @@ UserInfo.displayName = "UserInfo";
 
 export default UserInfo;
 
-const RowWrapper2 = styled.div`
+const RowWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
-  gap: 41px;
   height: auto;
+  width: 100%;
+  gap: 3em;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -140,30 +143,11 @@ const UserName = styled(Color)`
   }
 `;
 
-const UserGrade = styled(PuppleButton)`
-  width: 7.8125em;
-  height: 1.5625em;
-  cursor: default;
-
-  @media (max-width: 768px) {
-    box-sizing: border-box;
-  }
-`;
-
-const WelcomeText = styled.div`
-  font-size: 1em;
-  font-weight: 700;
-  color: #a2a3b2;
-  cursor: default;
-
-  @media (max-width: 768px) {
-    margin-bottom: 1em;
-  }
-`;
-
 const NameEditButton = styled(PuppleButton2)`
   background-color: #b693ff;
-  width: 100%;
+  width: 120px;
+  padding-left: 1em;
+  padding-right: 1em;
   height: 40px;
   font-weight: 700;
 
