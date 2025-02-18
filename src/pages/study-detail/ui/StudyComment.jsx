@@ -14,10 +14,10 @@ const StudyComment = ({ key, writer, content, userProfileImg, time }) => {
         <RelativeTime>{time}</RelativeTime>
       </WriterWrapper>
       <Content>{content}</Content>
-      <ReplyWrapper>
+      {/* <ReplyWrapper>
         <StyledReplyIcon />
         <ReplyText>답글달기</ReplyText>
-      </ReplyWrapper>
+      </ReplyWrapper> */}
     </CommentWrapper>
   );
 };
@@ -62,21 +62,21 @@ const Content = styled.div`
   font-weight: bold;
 `;
 
-const ReplyWrapper = styled.div`
-  width: 5em;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
+// const ReplyWrapper = styled.div`
+//   width: 5em;
+//   display: flex;
+//   align-items: center;
+//   cursor: pointer;
+// `;
 
-const StyledReplyIcon = styled(ReplyIcon)`
-  margin-right: 0.5em;
-  width: 1.2em;
-  height: 1.2em;
-`;
+// const StyledReplyIcon = styled(ReplyIcon)`
+//   margin-right: 0.5em;
+//   width: 1.2em;
+//   height: 1.2em;
+// `;
 
-const ReplyText = styled.div`
-  color: #a2a3b2;
-  font-size: 0.8125em;
-  font-weight: bold;
-`;
+// const ReplyText = styled.div`
+//   color: #a2a3b2;
+//   font-size: 0.8125em;
+//   font-weight: bold;
+// `;

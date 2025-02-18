@@ -126,8 +126,8 @@ const StudyDetailHeader = ({
               <Wrapper>
                 <StyledBar>|</StyledBar>
                 조회 {views}
-                {/* <StyledBar>|</StyledBar>
-                댓글 {commentCount} */}
+                <StyledBar>|</StyledBar>
+                댓글 {commentCount}
               </Wrapper>
             </TitleDetail>
 
