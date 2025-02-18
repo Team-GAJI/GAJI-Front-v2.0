@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import LikeIcon from "../../../assets/icons/community/emptyLikeIcon.svg?react";
 import { useNavigate } from "react-router-dom";
-import userProfileImg from "../../../assets/images/community/userProfile.png";
 import { communityPostAPI } from "../../community-detail/api/communityPostAPI";
 
 const QuestionPreview = ({
@@ -31,6 +30,11 @@ const QuestionPreview = ({
     }
   };
 
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
+
   return (
     <PageWrapper key={key}>
       <PostState state={state}>{state}</PostState>
@@ -41,7 +45,7 @@ const QuestionPreview = ({
       <PostInfoWrapper>
         <PostType>질문</PostType>
         <StyledBar>|</StyledBar>
-        <StyledUserProfileImg src={userProfileImg} alt="user profile" />
+        <UserProfile>{getFirstChar(writer)}</UserProfile>
         <Writer>{writer}</Writer>
         <Ago>{ago}</Ago>
         <Views>조회 {views}</Views>
@@ -69,7 +73,7 @@ const PostState = styled.div`
   width: 8em;
   height: 1.7em;
   background-color: ${({ state }) =>
-    state === "모집완료" ? "#A2A3B2" : "#8E59FF"};
+    state === "해결완료" ? "#A2A3B2" : "#8E59FF"};
   color: white;
   font-size: 0.7em;
   line-height: 1.7em;
@@ -112,7 +116,7 @@ const Content = styled.div`
 const PostInfoWrapper = styled.div`
   margin-top: 1.5em;
   display: flex;
-  flex-direction: row;
+  align-items: center;
   color: #d0d1d9;
   font-size: 0.8em;
 `;
@@ -121,10 +125,17 @@ const PostType = styled.div`
   margin-right: 1em;
 `;
 
-const StyledUserProfileImg = styled.img`
+const UserProfile = styled.div`
+  border-radius: 30px;
   margin-right: 0.6em;
-  width: 1.3em;
-  height: 1.3em;
+  width: 1.4em;
+  height: 1.4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
+  font-size: 0.9em;
 `;
 
 const StyledBar = styled.div`
