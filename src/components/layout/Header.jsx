@@ -12,8 +12,10 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userId");
-    window.location.reload();
+
     setAccessToken(null);
+
+    window.location.href = "/";
   };
 
   const toggleMenu = () => {

@@ -43,4 +43,8 @@ export const LoginButton = styled.div`
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.05);
   font-weight: 600;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: 280px;
+  }
 `;
