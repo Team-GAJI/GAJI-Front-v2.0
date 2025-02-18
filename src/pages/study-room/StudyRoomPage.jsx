@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import styled from "styled-components";
-import WeekCurriculum from "../study-room/ui/WeekCurriculum";
 import { useNavigate, useLocation } from "react-router-dom";
 import MobileManageButton from "../../components/common/MobileManageButton";
 import SideBar from "./ui/SideBar";
@@ -9,6 +8,12 @@ import { useEffect } from "react";
 import { studyFirstNoticeAPI } from "./api/studyNoticeAPI";
 import FirstNoticeSquare2 from "./ui/FirstNoticeSquare2";
 import { studyRoomPostDetailAPI } from "./api/studyRoomPostDetailAPI";
+import WeekTitle from "./ui/WeekTitle";
+import WeekTaskList from "./ui/WeekTaskList";
+import WeekMyProgress from "./ui/WeekMyProgress";
+import { weekStudyInfoAPI } from "./api/weekStudyInfoAPI";
+import { weekTaskListAPI } from "./api/weekTaskListAPI";
+// import { studyWeeksInfoAPI } from "./api/studyWeeksInfoAPI";
 
 const StudyRoomPage = () => {
   const location = useLocation();
@@ -22,6 +27,7 @@ const StudyRoomPage = () => {
   const [isWriter, setIsWriter] = useState(false);
   const [firstNotice, setFirstNotice] = useState();
   const [currentWeek, setCurrentWeek] = useState(0);
+  // const [weeks, setWeeks] = useState(0);
 
   const navigate = useNavigate();
   const handleNotice = () => {
@@ -40,11 +46,14 @@ const StudyRoomPage = () => {
       try {
         const writerId = await studyRoomPostDetailAPI(roomId);
         const userId = localStorage.getItem("userId");
-
         if (writerId === Number(userId)) {
           setIsWriter(true);
         }
-        // TODO : currentWeek update 코드
+
+        //TODO:주차별 정보 받고 넘기기
+
+        // const weeksData = await studyWeeksInfoAPI(roomId);
+        // if (weeksData) setWeeks(weeksData);
 
         const noticeData = await studyFirstNoticeAPI(roomId);
         if (noticeData) setFirstNotice(noticeData);
@@ -55,6 +64,25 @@ const StudyRoomPage = () => {
 
     fetchData();
   }, [roomId]);
+
+  const [weekInfo, setWeekInfo] = useState(null);
+  const [taskList, setTaskList] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const weekInfoData = await weekStudyInfoAPI(roomId, currentWeek);
+        const weekTaskListData = await weekTaskListAPI(roomId, currentWeek);
+        setWeekInfo(weekInfoData);
+        setTaskList(weekTaskListData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+      }
+    };
+
+    fetchData();
+  }, [roomId, currentWeek]);
 
   return (
     <>
@@ -67,7 +95,8 @@ const StudyRoomPage = () => {
       <SideBar
         studyInfo={studyInfo}
         roomId={roomId}
-        week={currentWeek + 1}
+        //TODO : 전체 주차 몇개있는지로 추후 수정
+        weeks={0}
         isWriter={isWriter}
         setCurrentWeek={setCurrentWeek}
       />
@@ -77,11 +106,10 @@ const StudyRoomPage = () => {
             <FirstNoticeSquare2 notice={firstNotice} />
             <NoticeMoreButton onClick={handleNotice}>더보기</NoticeMoreButton>
           </RowWrapper>
-          <WeekCurriculum
-            studyInfo={studyInfo}
-            roomId={roomId}
-            week={currentWeek}
-          />
+          <WeekTitle weekInfo={weekInfo} week={currentWeek + 1} />
+          <DivisionLine />
+          <WeekTaskList taskList={taskList} />
+          <WeekMyProgress weekInfo={weekInfo} taskList={taskList} />
         </MainContent>
       </ContentWrapper>
       <div onClick={handleManageClick}>
@@ -106,6 +134,15 @@ const NoticeMoreButton = styled.div`
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+`;
+
+const DivisionLine = styled.div`
+  margin-bottom: 1em;
+  margin-top: 1em;
+  width: 100%;
+  height: 1px;
+  background-color: #a2a3b2;
+  opacity: 20%;
 `;
 
 const RowWrapper = styled.div`
