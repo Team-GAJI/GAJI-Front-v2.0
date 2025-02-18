@@ -1,107 +1,117 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { PuppleButton } from "../../../components/button/Button";
 import Loading from "../../../components/common/Loading";
 import { getUserPostAPI } from "../api/getUserPostAPI";
+import { useNavigate } from "react-router-dom";
+import { debounce } from "lodash";
 
 const UserPost = ({ nickName }) => {
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [hasNext, setHasNext] = useState(true);
   const [category, setCategory] = useState(0);
   const [cursorDate, setCursorDate] = useState("");
 
-  const getPosts = useCallback(async () => {
-    if (isLoading || !hasNext) return;
-    setIsLoading(true);
+  const isLoading = useRef(false);
+  const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
-    const userId = localStorage.getItem("userId");
-    const types = ["질문", "프로젝트", "블로그", "스터디"];
-    const currentType = types[category];
+  const getPosts = useCallback(async () => {
+    if (isLoading.current || !hasNext) return;
+
+    isLoading.current = true;
 
     try {
+      const userId = localStorage.getItem("userId");
+      const types = ["질문", "프로젝트", "블로그", "스터디"];
+      const currentType = types[category];
+
       const response = await getUserPostAPI(userId, currentType, cursorDate);
-      console.log("API 응답:", response);
 
-      const { postList, hasNext: newHasNext } = response;
+      if (response?.postList?.length > 0) {
+        setPosts((prevPosts) => {
+          return [...prevPosts, ...response.postList].filter(
+            (post, index, self) =>
+              index === self.findIndex((p) => p.postId === post.postId),
+          );
+        });
 
-      if (!postList || postList.length === 0) {
-        console.log("게시글 데이터가 없습니다.");
-        setHasNext(false);
+        setHasNext(response.hasNext);
+
+        setCursorDate(
+          response.postList[response.postList.length - 1].createdAt,
+        );
       } else {
-        setPosts((prevPosts) => [...prevPosts, ...postList]);
-        setPage((prevPage) => prevPage + 1);
-        setHasNext(newHasNext);
-        // 설정된 cursorDate 업데이트
-        if (postList.length > 0) {
-          setCursorDate(postList[postList.length - 1].createdAt);
-        }
+        setHasNext(false);
       }
     } catch (error) {
       console.error("게시글을 가져오는 데 실패했습니다:", error.message);
-      setHasNext(false); // 오류 발생 시 hasNext를 false로 설정
+      setHasNext(false);
     } finally {
-      setIsLoading(false);
+      isLoading.current = false;
     }
-  }, [isLoading, hasNext, category, cursorDate]);
+  }, [category, cursorDate, hasNext]);
 
   useEffect(() => {
-    setPosts([]);
-    setPage(1);
+    setPosts([]); // 기존 데이터 초기화
     setHasNext(true);
-    setCursorDate(""); // 페이지 변경 시 커서 날짜 초기화
-    getPosts();
+    setCursorDate("");
   }, [category]);
 
+  /*스크롤 이벤트 */
   useEffect(() => {
-    const handleScroll = () => {
-      const { scrollTop, clientHeight, scrollHeight } =
-        document.documentElement;
-      if (scrollTop + clientHeight >= scrollHeight - 100) {
+    const handleScroll = debounce(() => {
+      if (!scrollRef.current) return; // scrollRef가 존재하지 않으면 실행하지 않음
+
+      const { scrollTop, clientHeight, scrollHeight } = scrollRef.current;
+
+      // 바닥에 닿았을 때만 API 호출
+      if (scrollTop + clientHeight >= scrollHeight - 200) {
         getPosts();
       }
-    };
+    }, 300);
 
-    window.addEventListener("scroll", handleScroll);
+    const scrollContainer = scrollRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", handleScroll);
+    }
+
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      if (scrollContainer) {
+        scrollContainer.removeEventListener("scroll", handleScroll);
+      }
     };
   }, [getPosts]);
+
+  /* 게시글 상세 이동 */
+  const handlePostDetail = (postId) => {
+    const categoryState = category === 3 ? "study" : "community";
+    navigate(`/${categoryState}/detail/${postId}`);
+  };
 
   return (
     <MyPostWrapper>
       <ExtraBold>{nickName}님이 쓴 글</ExtraBold>
       <Header>
-        <PostRouteButton
-          $isActive={category === 0}
-          onClick={() => setCategory(0)}
-        >
-          질문하기
-        </PostRouteButton>
-        <PostRouteButton
-          $isActive={category === 1}
-          onClick={() => setCategory(1)}
-        >
-          프로젝트 모집
-        </PostRouteButton>
-        <PostRouteButton
-          $isActive={category === 2}
-          onClick={() => setCategory(2)}
-        >
-          블로그
-        </PostRouteButton>
-        <PostRouteButton
-          $isActive={category === 3}
-          onClick={() => setCategory(3)}
-        >
-          스터디 모집
-        </PostRouteButton>
+        {["질문하기", "프로젝트 모집", "블로그", "스터디 모집"].map(
+          (title, index) => (
+            <PostRouteButton
+              key={index}
+              $isActive={category === index}
+              onClick={() => setCategory(index)}
+            >
+              {title}
+            </PostRouteButton>
+          ),
+        )}
       </Header>
 
-      <PostListWrapper>
+      <PostListWrapper ref={scrollRef}>
         {posts.map((post) => (
-          <PostListItem key={post.postId}>
+          <PostListItem
+            key={post.postId}
+            onClick={() => handlePostDetail(post.postId)}
+          >
             <PostState>{post.status}</PostState>
             <PostTitle>{post.title}</PostTitle>
             <PostText>{post.body}</PostText>
@@ -110,14 +120,13 @@ const UserPost = ({ nickName }) => {
             </PostInfo>
           </PostListItem>
         ))}
-        {isLoading && <Loading />}
+        {hasNext && !isLoading.current && <Loading />}{" "}
       </PostListWrapper>
     </MyPostWrapper>
   );
 };
 
 export default UserPost;
-
 const MyPostWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -188,6 +197,7 @@ const PostListWrapper = styled.div`
 `;
 
 const PostListItem = styled.div`
+  cursor: pointer;
   width: 100%;
   box-sizing: border-box;
   padding: 1em;
