@@ -2,18 +2,25 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ roomId, week, setCurrentWeek, studyInfo, isWriter }) => {
+const SideBar = ({
+  roomId,
+  weeks,
+  setCurrentWeek,
+  studyInfo,
+  isWriter,
+  onClick,
+}) => {
   const navigate = useNavigate();
   const handleManage = () => {
     navigate("/study/manage-week", {
-      state: { roomId: roomId, studyInfo: studyInfo, week: week },
+      state: { roomId, studyInfo, weeks },
     });
   };
 
   return (
     <SidebarWrapper>
       <SidebarContainer>
-        {[...Array(week)].map((_, index) => (
+        {[...Array(weeks)].map((_, index) => (
           <React.Fragment key={index}>
             <SidebarButton
               onClick={() => setCurrentWeek(index)}
@@ -26,9 +33,7 @@ const SideBar = ({ roomId, week, setCurrentWeek, studyInfo, isWriter }) => {
       </SidebarContainer>
 
       {isWriter && (
-        <SidebarManageButton onClick={handleManage}>
-          스터디 관리
-        </SidebarManageButton>
+        <SidebarManageButton onClick={onClick}>스터디 관리</SidebarManageButton>
       )}
     </SidebarWrapper>
   );

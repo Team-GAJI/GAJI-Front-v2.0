@@ -26,7 +26,7 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
         const response = await getNickNameAPI(nickname);
         alert(response.message || "닉네임이 수정되었습니다!");
 
-        // ✅ 내부 상태를 변경하여 UI 반영
+        // 내부 상태를 변경하여 UI 반영
         setLocalUserInfo((prev) => ({
           ...prev,
           nickname: nickname,
