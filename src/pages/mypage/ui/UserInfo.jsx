@@ -26,7 +26,6 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
         const response = await getNickNameAPI(nickname);
         alert(response.message || "닉네임이 수정되었습니다!");
 
-        // 내부 상태를 변경하여 UI 반영
         setLocalUserInfo((prev) => ({
           ...prev,
           nickname: nickname,
@@ -62,7 +61,7 @@ const UserInfo = forwardRef(({ userInfo }, ref) => {
             </>
           ) : (
             <>
-              <UserName>{localUserInfo.nickname} 님</UserName>
+              <UserName>{localUserInfo.nickname}</UserName>
               <NameEditButton onClick={toggleEditingMode}>
                 닉네임 수정
               </NameEditButton>
@@ -137,7 +136,8 @@ const UserName = styled(Color)`
   font-size: 1.25em;
   font-weight: 800;
   cursor: default;
-
+  width: 200px;
+  padding: 0;
   @media (max-width: 768px) {
     font-size: 1em;
   }
@@ -164,7 +164,8 @@ const UserNameInput = styled.input`
   border: none;
   outline: none;
   background-color: transparent;
-  width: 100%;
+  width: 200px;
+  padding: 0;
 
   &:focus {
     outline: none;
