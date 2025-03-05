@@ -91,6 +91,8 @@ ManageWeekeDetailed.displayName = "ManageWeekeDetailed";
 
 export default ManageWeekeDetailed;
 
+
+
 const MainWrapper = styled.div`
   background-color: #fbfaff;
   display: flex;
@@ -137,7 +139,23 @@ const InputStudyName = styled.input`
     font-weight: 700;
   }
 `;
-
+const InputMainStudyName = styled.input`
+  background: none;
+  border: none;
+  border: ${(props) =>
+    props.isFirst ? "1px solid #A2A3B2" : "1px solid #8E59FF"};
+  border-radius: 0.5em;
+  outline: none;
+  height: 2.5em;
+  font-size: 1em;
+  padding-right: 2.5em;
+  width: 100%;
+  &::placeholder {
+    color: #a2a3b2;
+    font-size: 0.8125em;
+    font-weight: 700;
+  }
+`;
 const Icons = styled.img`
   position: absolute;
   top: 50%;

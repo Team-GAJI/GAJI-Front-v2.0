@@ -40,8 +40,8 @@ const StudyManageWeekPage = () => {
   const location = useLocation();
   const roomId = location.state?.roomId;
   const weekCount = location.state?.weeks; //주차 받아오기
-  console.log(roomId);
-  console.log("내가 선택한 주차 weeks",selectedWeek);
+  // console.log(roomId);
+  // console.log("내가 선택한 주차 weeks",selectedWeek);
 
   useEffect(() => {
     console.log("roomId:", roomId);
@@ -75,131 +75,77 @@ const StudyManageWeekPage = () => {
     }
   }, [dispatch, weeksData.length]);
 
-  // const handleSave = useCallback(async () => {
-  //   const currentWeekData = weeksData[selectedWeek];
-  //   alert("저장완료"); // -> 서버에 전송 후에 저장하기 나오게...
-  //   if (!currentWeekData) {
-  //     console.error("현재 주차 데이터가 없습니다.");
-  //     return;
-  //   }
-
-  //   // 이름 및 설명
-  //   const weekInfo = {
-  //     title: currentWeekData.basicInfo.title,
-  //     description: currentWeekData.basicInfo.description,
-  //   };
-    
-    
-  //   // 날짜 -1 수정 -> 네트워크 창에는 잘 전송되는 거 확인가능/ 콘솔창에서는 X -> 수정(급x)
-  //   let studyPeriodStartDate = new Date(currentWeekData.studyPeriodStartDate);
-  //   let studyPeriodEndDate = new Date(currentWeekData.studyPeriodEndDate);
-    
-  //   // 날짜가 제대로 설정되었는지 확인하고 하루를 추가
-  //   studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1);
-  //   studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); 
-  //   const periodInfo = {
-  //     studyPeriodStartDate: studyPeriodStartDate.toISOString(),
-  //     studyPeriodEndDate: studyPeriodEndDate.toISOString(),
-  //   };
-
-  //   // 과제 등록
-  //   const assignmentsInfo = {
-  //     assignments: currentWeekData.assignments || [],
-  //   };
-  
-  //   // 시작일과 종료일이 유효한지 확인
-  //   if (!periodInfo.studyPeriodStartDate || !periodInfo.studyPeriodEndDate) {
-  //     console.error("스터디 기간 정보가 누락되었습니다.");
-  //     return;
-  //   }
-
-  //   try {
-  //     // descriptionAPI 호출
-  //     const descriptionResult = await descriptionAPI(
-  //       roomId,
-  //       selectedWeek,
-  //       weekInfo,
-  //     );
-  //     console.log("설명 저장 완료:", descriptionResult);
-
-  //     // periodAPI 호출
-  //     const periodResult = await periodAPI(roomId, selectedWeek, periodInfo);
-  //     console.log("스터디 기한 저장 완료:", periodResult);
-
-  //     //assignmentsAPI 호출
-  //     if (assignmentsInfo.assignments.length > 0) {
-  //       const assignmentsResult = await assignmentsAPI(
-  //         roomId,
-  //         selectedWeek,
-  //         assignmentsInfo,
-  //       );
-  //       console.log("등록한 과제 : ", assignmentsResult);
-  //     } else {
-  //       console.warn("과제가 비어 있습니다.");
-  //     }
-   
-  //   } catch (error) {
-  //     console.error("저장 중 오류 발생:", error);
-  //   }
-  // }, [roomId, selectedWeek, weeksData]);
-
   const handleSave = useCallback(async () => {
     const currentWeekData = weeksData[selectedWeek];
-    alert("저장완료"); // 서버에 전송 후 알림 표시
-  
+    alert("저장완료"); // -> 서버에 전송 후에 저장하기 나오게...
     if (!currentWeekData) {
       console.error("현재 주차 데이터가 없습니다.");
       return;
     }
-  
+
+    // 이름 및 설명
     const weekInfo = {
       title: currentWeekData.basicInfo.title,
       description: currentWeekData.basicInfo.description,
     };
-  
+    
+    
+    // 날짜 -1 수정 -> 네트워크 창에는 잘 전송되는 거 확인가능/ 콘솔창에서는 X -> 수정(급x)
     let studyPeriodStartDate = new Date(currentWeekData.studyPeriodStartDate);
     let studyPeriodEndDate = new Date(currentWeekData.studyPeriodEndDate);
-  
+    
+    // 날짜가 제대로 설정되었는지 확인하고 하루를 추가
     studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1);
-    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1);
-  
+    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); 
     const periodInfo = {
       studyPeriodStartDate: studyPeriodStartDate.toISOString(),
       studyPeriodEndDate: studyPeriodEndDate.toISOString(),
     };
-  
+
+    // 과제 등록
     const assignmentsInfo = {
       assignments: currentWeekData.assignments || [],
     };
   
+    // 시작일과 종료일이 유효한지 확인
     if (!periodInfo.studyPeriodStartDate || !periodInfo.studyPeriodEndDate) {
       console.error("스터디 기간 정보가 누락되었습니다.");
       return;
     }
-  
+
     try {
-      const descriptionResult = await descriptionAPI(roomId, selectedWeek, weekInfo);
+      // descriptionAPI 호출
+      const descriptionResult = await descriptionAPI(
+        roomId,
+        selectedWeek,
+        weekInfo,
+      );
       console.log("설명 저장 완료:", descriptionResult);
-  
+
+      // periodAPI 호출
       const periodResult = await periodAPI(roomId, selectedWeek, periodInfo);
       console.log("스터디 기한 저장 완료:", periodResult);
-  
+
+      //assignmentsAPI 호출
       if (assignmentsInfo.assignments.length > 0) {
-        // 기존 assignmentsAPI 호출 대신 assignmentsUpdateAPI 사용
-        const updatedAssignmentsResult = await assignmentsUpdateAPI(
+        const assignmentsResult = await assignmentsAPI(
+          roomId,
+          selectedWeek,
           assignmentsInfo,
-          selectedWeek
         );
-        console.log("수정된 과제:", updatedAssignmentsResult);
+        console.log("등록한 과제 : ", assignmentsResult);
       } else {
         console.warn("과제가 비어 있습니다.");
       }
+   
     } catch (error) {
       console.error("저장 중 오류 발생:", error);
     }
   }, [roomId, selectedWeek, weeksData]);
 
+  // 수정 한 저장버튼
   
+
   const handleWeekDataChange = (field, value) => {
     const currentWeekData = weeksData[selectedWeek] || {
       basicInfo: { title: "", description: "" },
