@@ -9,13 +9,21 @@ const Header = () => {
   const [isAccessToken, setIsAccessToken] = useState();
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userId");
+  const handleLogout = async () => {
+    try {
+      // 로컬 스토리지에서 사용자 정보 삭제
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken"); // refreshToken도 삭제
+      localStorage.removeItem("userId");
 
-    setAccessToken(null);
+      // 상태 업데이트 (로그인 상태 변경)
+      setIsAccessToken(false);
 
-    window.location.href = "/";
+      // 안전한 페이지 이동 (React Router 사용)
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
   };
 
   const toggleMenu = () => {
