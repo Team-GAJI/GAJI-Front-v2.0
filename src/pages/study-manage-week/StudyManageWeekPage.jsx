@@ -117,20 +117,20 @@ const StudyManageWeekPage = () => {
       // descriptionAPI 호출
       const descriptionResult = await descriptionAPI(
         roomId,
-        selectedWeek,
+        selectedWeek+1,
         weekInfo,
       );
       console.log("설명 저장 완료:", descriptionResult);
 
       // periodAPI 호출
-      const periodResult = await periodAPI(roomId, selectedWeek, periodInfo);
+      const periodResult = await periodAPI(roomId, selectedWeek+1, periodInfo);
       console.log("스터디 기한 저장 완료:", periodResult);
 
       //assignmentsAPI 호출
       if (assignmentsInfo.assignments.length > 0) {
         const assignmentsResult = await assignmentsAPI(
           roomId,
-          selectedWeek,
+          selectedWeek+1,
           assignmentsInfo,
         );
         console.log("등록한 과제 : ", assignmentsResult);
