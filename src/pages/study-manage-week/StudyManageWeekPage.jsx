@@ -201,7 +201,6 @@ const StudyManageWeekPage = () => {
   }, [roomId, selectedWeek, weeksData]);
 
   
-  
   const handleWeekDataChange = (field, value) => {
     const currentWeekData = weeksData[selectedWeek] || {
       basicInfo: { title: "", description: "" },
