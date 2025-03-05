@@ -27,7 +27,7 @@ const StudyRoomPage = () => {
   const [isWriter, setIsWriter] = useState(false);
   const [firstNotice, setFirstNotice] = useState();
   const [currentWeek, setCurrentWeek] = useState(0);
-  // const [weeks, setWeeks] = useState(0);
+  const [weeks, setWeeks] = useState(0);
 
   const navigate = useNavigate();
   const handleNotice = () => {
@@ -36,24 +36,33 @@ const StudyRoomPage = () => {
     });
   };
   const handleManageClick = () => {
-    navigate("/study/manage", { state: { roomId, week: currentWeek + 1 } });
+    navigate("/study/manage", { state: { roomId, weeks } });
   };
 
+  function calculateWeek(start, end) {
+    const startDate = new Data(start);
+    const endDate = new Data(end);
+    const diffInMs = endDate - startDate;
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+    return Math.ceil(diffInDays / 7);
+  }
   useEffect(() => {
     if (!roomId) return;
 
     const fetchData = async () => {
       try {
-        const writerId = await studyRoomPostDetailAPI(roomId);
+        const roomData = await studyRoomPostDetailAPI(roomId);
         const userId = localStorage.getItem("userId");
-        if (writerId === Number(userId)) {
+        if (roomData.writerId === Number(userId)) {
           setIsWriter(true);
         }
 
-        //TODO:주차별 정보 받고 넘기기
-
-        // const weeksData = await studyWeeksInfoAPI(roomId);
-        // if (weeksData) setWeeks(weeksData);
+        const weeksData = await calculateWeek(
+          roomData.studyStartTime,
+          roomData.studyEndTime,
+        );
+        console.log(weeksData);
+        if (weeksData) setWeeks(weeksData);
 
         const noticeData = await studyFirstNoticeAPI(roomId);
         if (noticeData) setFirstNotice(noticeData);
@@ -95,8 +104,7 @@ const StudyRoomPage = () => {
       <SideBar
         studyInfo={studyInfo}
         roomId={roomId}
-        //TODO : 전체 주차 몇개있는지로 추후 수정
-        weeks={0}
+        weeks={weeks}
         isWriter={isWriter}
         setCurrentWeek={setCurrentWeek}
       />
