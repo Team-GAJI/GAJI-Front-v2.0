@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import CheckBoxBlank from "./CheckBoxBlank";
 import CheckBoxFill from "./CheckBoxFill";
+import { weekTaskUpdate } from "../api/weekTaskUpdate";
 
-const WeekTaskItem = ({ onClick, content, state }) => {
+const WeekTaskItem = ({ id, content, state }) => {
+  const [isCompletedUi, setIsCompletedUi] = useState(state);
+
+  const handleCheck = async (assignmentId) => {
+    try {
+      const response = await weekTaskUpdate(assignmentId);
+
+      if (response) {
+        setIsCompletedUi(true);
+        return;
+      }
+    } catch (error) {
+      console.error("과제 상태 업데이트 중 오류 발생:", error);
+    }
+  };
   return (
-    <TaskItemWrapper onClick={onClick}>
-      {state ? <CheckBoxFill /> : <CheckBoxBlank />}
-      <TaskContent completed={state}>{content}</TaskContent>
+    <TaskItemWrapper onClick={() => handleCheck(id)}>
+      {isCompletedUi ? <CheckBoxFill /> : <CheckBoxBlank />}
+      <TaskContent completed={isCompletedUi}>{content}</TaskContent>
     </TaskItemWrapper>
   );
 };

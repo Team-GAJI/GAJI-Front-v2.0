@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import WeekTaskItem from "./WeekTaskItem";
-import { weekTaskUpdate } from "../api/weekTaskUpdate";
 
 const WeekTaskList = ({ taskList }) => {
   const [tasks, setTasks] = useState([]);
@@ -11,26 +10,6 @@ const WeekTaskList = ({ taskList }) => {
       setTasks(taskList);
     }
   }, [taskList]);
-
-  const handleCheck = async (assignmentId) => {
-    try {
-      const response = await weekTaskUpdate(assignmentId);
-
-      if (response.success) {
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.assignmentId === assignmentId
-              ? { ...task, completedStatus: !task.completedStatus }
-              : task,
-          ),
-        );
-      } else {
-        console.error("과제 상태 업데이트 실패:", response.message);
-      }
-    } catch (error) {
-      console.error("과제 상태 업데이트 중 오류 발생:", error);
-    }
-  };
 
   if (!tasks || tasks.length === 0) {
     return <div>과제가 없습니다.</div>;
@@ -44,7 +23,7 @@ const WeekTaskList = ({ taskList }) => {
           {tasks.map((task) => (
             <WeekTaskItem
               key={task.assignmentId}
-              onClick={() => handleCheck(task.assignmentId)}
+              id={task.assignmentId}
               content={task.content}
               state={task.completedStatus}
             />
