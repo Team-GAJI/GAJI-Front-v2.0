@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import UserPost from "./ui/UserPost";
+import UserPostList from "./ui/UserPostList";
 import UserStudyList from "./ui/UserStudyList";
 import UserInfo from "./ui/UserInfo";
 import { userInfoAPI } from "./api/userInfoAPI";
@@ -151,7 +151,7 @@ const MyPage = () => {
             />
           </RowWrapper4>
           <Div ref={myPostRef}>
-            <UserPost nickName={userInfo.nickname} />
+            <UserPostList nickName={userInfo.nickname} />
           </Div>
         </MyPageWrapper>
       )}

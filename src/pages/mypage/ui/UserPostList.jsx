@@ -6,7 +6,7 @@ import { getUserPostAPI } from "../api/getUserPostAPI";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 
-const UserPost = ({ nickName }) => {
+const UserPostList = ({ nickName }) => {
   const [posts, setPosts] = useState([]);
   const [hasNext, setHasNext] = useState(true);
   const [category, setCategory] = useState(0);
@@ -126,7 +126,7 @@ const UserPost = ({ nickName }) => {
   );
 };
 
-export default UserPost;
+export default UserPostList;
 const MyPostWrapper = styled.div`
   width: 100%;
   display: flex;
