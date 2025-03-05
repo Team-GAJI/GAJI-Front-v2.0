@@ -3,18 +3,18 @@ import styled from "styled-components";
 import { PuppleButton } from "../../../components/button/Button";
 import Loading from "../../../components/common/Loading";
 import { getUserPostAPI } from "../api/getUserPostAPI";
-import { useNavigate } from "react-router-dom";
-import { debounce } from "lodash";
+import { useHandlePostDetail } from "../feature/useHandlePostDetail";
+import { handleScroll } from "../feature/handleScroll";
 
 const UserPostList = ({ nickName }) => {
   const [posts, setPosts] = useState([]);
   const [hasNext, setHasNext] = useState(true);
   const [category, setCategory] = useState(0);
   const [cursorDate, setCursorDate] = useState("");
+  const handlePostDetail = useHandlePostDetail();
 
   const isLoading = useRef(false);
   const scrollRef = useRef(null);
-  const navigate = useNavigate();
 
   const getPosts = useCallback(async () => {
     if (isLoading.current || !hasNext) return;
@@ -58,36 +58,25 @@ const UserPostList = ({ nickName }) => {
     setCursorDate("");
   }, [category]);
 
-  /*스크롤 이벤트 */
+  // 스크롤 이벤트
   useEffect(() => {
-    const handleScroll = debounce(() => {
-      if (!scrollRef.current) return; // scrollRef가 존재하지 않으면 실행하지 않음
-
-      const { scrollTop, clientHeight, scrollHeight } = scrollRef.current;
-
-      // 바닥에 닿았을 때만 API 호출
-      if (scrollTop + clientHeight >= scrollHeight - 200) {
-        getPosts();
-      }
-    }, 300);
-
     const scrollContainer = scrollRef.current;
     if (scrollContainer) {
-      scrollContainer.addEventListener("scroll", handleScroll);
+      scrollContainer.addEventListener(
+        "scroll",
+        handleScroll(scrollRef, getPosts),
+      );
     }
 
     return () => {
       if (scrollContainer) {
-        scrollContainer.removeEventListener("scroll", handleScroll);
+        scrollContainer.removeEventListener(
+          "scroll",
+          handleScroll(scrollRef, getPosts),
+        );
       }
     };
   }, [getPosts]);
-
-  /* 게시글 상세 이동 */
-  const handlePostDetail = (postId) => {
-    const categoryState = category === 3 ? "study" : "community";
-    navigate(`/${categoryState}/detail/${postId}`);
-  };
 
   return (
     <MyPostWrapper>

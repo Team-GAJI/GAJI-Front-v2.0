@@ -12,7 +12,6 @@ const MyPage = () => {
   const navigate = useNavigate();
   const homeRef = useRef(null);
   const studyRoomRef = useRef(null);
-  const calendarRef = useRef(null);
   const myPostRef = useRef(null);
 
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
@@ -53,7 +52,6 @@ const MyPage = () => {
     const positions = [
       homeRef.current.offsetTop,
       studyRoomRef.current.offsetTop,
-      calendarRef.current.offsetTop,
       myPostRef.current.offsetTop,
     ];
 
