@@ -81,12 +81,16 @@ const StudyRoomPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const weekInfoData = await weekStudyInfoAPI(roomId, currentWeek);
-        const weekTaskListData = await weekTaskListAPI(roomId, currentWeek);
+        const weekInfoData = await weekStudyInfoAPI(roomId, currentWeek + 1);
+        const weekTaskListData = await weekTaskListAPI(roomId, currentWeek + 1);
         setWeekInfo(weekInfoData);
         setTaskList(weekTaskListData);
       } catch (error) {
         console.error(error);
+        if (error) {
+          setWeekInfo(null);
+          setTaskList(null);
+        }
       } finally {
       }
     };
@@ -184,6 +188,7 @@ const MainContent = styled.div`
   color: #000;
   display: flex;
   flex-direction: column;
+  min-height: 300px;
 `;
 
 const StudyName = styled.p`
