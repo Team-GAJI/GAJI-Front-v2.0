@@ -11,6 +11,7 @@ import {
   setPrivate,
 } from "../../../redux/slice/study/studyCreateSlice";
 import StudyCreateSelectBox from "./StudyCreateSelectBox";
+import { fileUploadAPI } from "../api/fileUploadAPI";
 
 const StudyInfo = () => {
   const [isMinWarningVisible, setIsMinWarningVisible] = useState(false);
@@ -18,11 +19,13 @@ const StudyInfo = () => {
   const [lengthCount, setLengthCount] = useState(0);
   const [styledHr, setStyledHr] = useState(false);
   const [isOn, setIsOn] = useState(true);
-  const [imgFile, setImgFile] = useState("");
+  const [binaryData, setBinaryData] = useState(null);
 
   // Redux 관리
   const dispatch = useDispatch();
-  const { name, peopleMaximum } = useSelector((state) => state.studyCreate);
+  const { name, peopleMaximum, thumbnailUrl } = useSelector(
+    (state) => state.studyCreate,
+  );
 
   // 제목 입력
   const handleTitleChange = (e) => {
@@ -59,17 +62,17 @@ const StudyInfo = () => {
 
   // 이미지 업로드 input의 onChange
   const imgRef = useRef();
-  const saveImgFile = () => {
+
+  const saveImgFile = async () => {
     const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImgFile(reader.result);
-    };
+
     if (file) {
-      // 보통 파일 업로드 후, 서버에서 받은 URL을 상태에 저장합니다.
-      const url = URL.createObjectURL(file);
-      dispatch(setThumbnailUrl(url));
+      try {
+        const url = await fileUploadAPI("STUDY", file);
+        dispatch(setThumbnailUrl(url));
+      } catch (error) {
+        console.error("파일 업로드 실패:", error);
+      }
     }
   };
 
@@ -151,8 +154,8 @@ const StudyInfo = () => {
             <ImageText>파일 형식: jpg, png</ImageText>
           </ImageWrapper>
           {/* 미리보기 */}
-          <PreivewWrapper isImgFile={imgFile}>
-            <StyledGrayLogo isImgFile={imgFile} />
+          <PreivewWrapper url={thumbnailUrl}>
+            <StyledGrayLogo url={thumbnailUrl} />
           </PreivewWrapper>
         </UploadWrapper>
       </ThumbNailWrapper>
@@ -380,8 +383,7 @@ const PreivewWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #f2f4f8;
-  background-image: ${(props) =>
-    props.isImgFile ? `url(${props.isImgFile}` : "none"});
+  background-image: ${(props) => (props.url ? `url(${props.url}` : "none")});
   background-size: cover;
   @media (max-width: 768px) {
     width: 100%;
@@ -390,7 +392,7 @@ const PreivewWrapper = styled.div`
 
 const StyledGrayLogo = styled(GrayLogo)`
   width: 2rem;
-  display: ${(props) => (props.isImgFile ? "none" : "flex")};
+  display: ${(props) => (props.url ? "none" : "flex")};
 `;
 
 const ToggleWrapper = styled.div`
