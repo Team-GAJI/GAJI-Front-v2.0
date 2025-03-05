@@ -22,6 +22,7 @@ import { weekcountAPI } from "./api/weekcountAPI.jsx";
 import { setWeekData } from "../../redux/slice/studymanageweek/studymanageweekSlice.jsx";
 import { current } from "@reduxjs/toolkit";
 
+
 const StudyManageWeekPage = () => {
   const [weeks, setWeeks] = useState([0]);
 
@@ -41,7 +42,7 @@ const StudyManageWeekPage = () => {
   const weekCount = location.state?.week; //주차 받아오기
 
   console.log(roomId);
-  console.log("내가 선택한 주차 weeks",selectedWeek);
+  console.log("내가 선택한 주차 weeks",selectedWeek+1);
 
   useEffect(() => {
     console.log("roomId:", roomId);
@@ -100,8 +101,8 @@ const StudyManageWeekPage = () => {
     let studyPeriodEndDate = new Date(currentWeekData.studyPeriodEndDate);
     
     // 날짜가 제대로 설정되었는지 확인하고 하루를 추가
-    studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1); // 1일 더하기
-    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); // 1일 더하기
+    studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1);
+    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); 
     const periodInfo = {
       studyPeriodStartDate: studyPeriodStartDate.toISOString(),
       studyPeriodEndDate: studyPeriodEndDate.toISOString(),
@@ -114,6 +115,7 @@ const StudyManageWeekPage = () => {
     // const assignmentsInfo = {
     //     assignments:  assignmentsInfo.assignments || [],
     // };
+
     // 시작일과 종료일이 유효한지 확인
     if (!periodInfo.studyPeriodStartDate || !periodInfo.studyPeriodEndDate) {
       console.error("스터디 기간 정보가 누락되었습니다.");
@@ -146,7 +148,7 @@ const StudyManageWeekPage = () => {
       }
       // 입력한 데이터값 모두 보기
       console.log("roomId: ", roomId);
-      console.log("현재 주차 데이터:", currentWeekData);
+      // console.log("현재 주차 데이터:", currentWeekData);
     } catch (error) {
       console.error("저장 중 오류 발생:", error);
     }
