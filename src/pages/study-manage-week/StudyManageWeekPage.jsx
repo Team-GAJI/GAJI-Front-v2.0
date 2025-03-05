@@ -137,7 +137,19 @@ const StudyManageWeekPage = () => {
       } else {
         console.warn("과제가 비어 있습니다.");
       }
-   
+      // 저장하기 버튼을 누르면 새로운 id로 계속 나옴 -> 수정해야함
+
+      //assignmentsUpdateAPI 호출 -> 등록한 과제에서 변경한 내용이 있다면 
+      // if (JSON.stringify(assignmentsInfo.assignments) !== JSON.stringify(assignments)) {
+      //   console.log("과제변경 저장");
+      //     const updateResult = await assignmentsUpdateAPI(
+      //       roomId,
+      //       selectedWeek + 1,
+      //       assignments, // 변경된 과제 내용 -> 선언X -> 수정
+      //   );
+      //   console.log("과제 업데이트 결과 : ", updateResult);
+      // }
+    
     } catch (error) {
       console.error("저장 중 오류 발생:", error);
     }
