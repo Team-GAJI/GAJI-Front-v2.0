@@ -38,8 +38,7 @@ const StudyManageWeekPage = () => {
   
   const location = useLocation();
   const roomId = location.state?.roomId;
-  const weekCount = location.state?.week; //주차 받아오기
-
+  const weekCount = location.state?.weeks; //주차 받아오기
   console.log(roomId);
   console.log("내가 선택한 주차 weeks",selectedWeek);
 
@@ -341,18 +340,18 @@ const Sidebar1 = styled.aside`
   top: 5em;
   margin-top: 4.75em;
 
-  //스크롤 
+  //스크롤
   &::-webkit-scrollbar {
     height: 8px;
     background: none;
-    width : 8px;
+    width: 8px;
   }
   &:hover::-webkit-scrollbar-thumb {
     // width: 0.2px;
     border-radius: 30px;
     background-color: rgb(142, 89, 255, 0.5);
   }
-    
+
   @media (max-width: 768px) {
     position: -webkit-sticky;
     position: sticky;
