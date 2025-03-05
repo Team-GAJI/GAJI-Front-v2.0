@@ -5,7 +5,10 @@ export const assignmentsAPI = async (roomId, weeks, assignmentsInfo) => {
     const response = await api.post(
       `/study-rooms/assignments/${roomId}/${weeks}`,
       {
-        bodyList: assignmentsInfo.assignments,
+        // bodyList: assignmentsInfo.assignments,
+        bodyList: Array.isArray(assignmentsInfo.assignments)
+        ? assignmentsInfo.assignments
+        : [],
       },
     );
     return response.data.result;
