@@ -1,7 +1,7 @@
 import { api } from "../../../app/api";
 
 // 스터디 기한 API
-export const periodAPI = async (roomId, week, periodInfo) => {
+export const periodAPI = async (roomId, weeks, periodInfo) => {
   try {
     console.log("보내는 데이터:", {
       startDate: periodInfo.studyPeriodStartDate,
@@ -9,7 +9,7 @@ export const periodAPI = async (roomId, week, periodInfo) => {
     });
 
     const response = await api.post(
-      `/api/study-rooms/event/${roomId}/${week}/period`,
+      `/study-rooms/event/${roomId}/${weeks}/period`,
       {
         startDate: periodInfo.studyPeriodStartDate,
         endDate: periodInfo.studyPeriodEndDate,

@@ -3,21 +3,24 @@ import styled from "styled-components";
 import ReplyIcon from "../../../assets/icons/community/reply.svg?react";
 import normalProfileImg from "../../../assets/images/community/userProfile.png";
 
-const StudyComment = ({ key, writer, content, userProfileImg, time }) => {
-  const profileImg = userProfileImg || normalProfileImg;
+const StudyComment = ({ key, writer, content, time }) => {
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
 
   return (
     <CommentWrapper key={key}>
       <WriterWrapper>
-        <StyledProfileImg src={profileImg} alt="profile image" />
+        <UserProfile>{getFirstChar(writer)}</UserProfile>
         <UserName>{writer}</UserName>
         <RelativeTime>{time}</RelativeTime>
       </WriterWrapper>
       <Content>{content}</Content>
-      <ReplyWrapper>
+      {/* <ReplyWrapper>
         <StyledReplyIcon />
         <ReplyText>답글달기</ReplyText>
-      </ReplyWrapper>
+      </ReplyWrapper> */}
     </CommentWrapper>
   );
 };
@@ -37,10 +40,19 @@ const WriterWrapper = styled.div`
   align-items: center;
 `;
 
-const StyledProfileImg = styled.img`
-  margin-right: 0.8em;
-  width: 2.6038em;
-  height: 2.6038em;
+const UserProfile = styled.div`
+  border-radius: 30px;
+  margin-right: 0.5em;
+  width: 1.75em;
+  height: 1.75em;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
 `;
 
 const UserName = styled.div`
@@ -62,21 +74,21 @@ const Content = styled.div`
   font-weight: bold;
 `;
 
-const ReplyWrapper = styled.div`
-  width: 5em;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-`;
+// const ReplyWrapper = styled.div`
+//   width: 5em;
+//   display: flex;
+//   align-items: center;
+//   cursor: pointer;
+// `;
 
-const StyledReplyIcon = styled(ReplyIcon)`
-  margin-right: 0.5em;
-  width: 1.2em;
-  height: 1.2em;
-`;
+// const StyledReplyIcon = styled(ReplyIcon)`
+//   margin-right: 0.5em;
+//   width: 1.2em;
+//   height: 1.2em;
+// `;
 
-const ReplyText = styled.div`
-  color: #a2a3b2;
-  font-size: 0.8125em;
-  font-weight: bold;
-`;
+// const ReplyText = styled.div`
+//   color: #a2a3b2;
+//   font-size: 0.8125em;
+//   font-weight: bold;
+// `;

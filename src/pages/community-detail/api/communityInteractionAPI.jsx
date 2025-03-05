@@ -3,7 +3,7 @@ import { api } from "../../../app/api";
 // 좋아요 추가
 export const communityAddLike = async (postId) => {
   try {
-    const response = await api.post(`community-posts/${postId}/likes`);
+    const response = await (`community-posts/${postId}/likes`);
     return response.data;
   } catch (error) {
     console.error(

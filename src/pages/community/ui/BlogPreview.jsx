@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import LikeIcon from "../../../assets/icons/community/fillLikeIcon.svg?react";
 import { useNavigate } from "react-router-dom";
-import userProfileImg from "../../../assets/images/community/userProfile.png";
 import { communityPostAPI } from "../../community-detail/api/communityPostAPI";
 import { studyRoomPostDetailAPI } from "../../study-room/api/studyRoomPostDetailAPI";
 import ThumbnailLogo from "../../../assets/logos/ThumbnailLogo.svg?react";
@@ -45,6 +44,11 @@ const BlogPreview = ({
   // 기본 썸네일 기능
   const backgroundImage = background;
 
+  // 유저 이름 앞 글자 따오기
+  const getFirstChar = (writer) => {
+    return writer && writer.trim().length > 0 ? writer.trim()[0] : "u";
+  };
+
   return (
     <PostWrapper key={key} onClick={() => handleSubmit()} link={link}>
       {/* 배경 */}
@@ -62,7 +66,7 @@ const BlogPreview = ({
         <Content>{content}</Content>
         <PostInfoWrapper>
           <InfoLeftWrapper>
-            <StyledUserProfileImg src={userProfileImg} alt="user profile" />
+            <UserProfile>{getFirstChar(writer)}</UserProfile>
             <Writer>{writer}</Writer>
           </InfoLeftWrapper>
           <InfoRightWrapper>
@@ -211,10 +215,17 @@ const InfoLeftWrapper = styled.div`
   font-weight: bold;
 `;
 
-const StyledUserProfileImg = styled.img`
+const UserProfile = styled.div`
+  border-radius: 30px;
   margin-right: 0.6em;
   width: 1.7515em;
   height: 1.7515em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #8e59ff;
+  color: white;
+  font-size: 0.9em;
 `;
 
 const Writer = styled.div``;
