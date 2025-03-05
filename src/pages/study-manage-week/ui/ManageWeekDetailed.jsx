@@ -7,10 +7,12 @@ import React, {
 import styled from "styled-components";
 import Delete from "../../../assets/icons/studyManageWeek/StudyManageWeekDelete.png";
 
+
 const ManageWeekeDetailed = forwardRef(
   ({ selectedWeek, weekData = [], onWeekDataChange }, ref) => {
-    const [inputs, setInputs] = useState([""]);
+    const [inputs, setInputs] = useState([]);
     const maxInputs = 5; // 최대 5개까지 과제 입력
+    const [studyName, setStudyName] = useState(''); // 입력한 과제명을 저장할 상태
 
     // 부모 컴포넌트에서 배열 참조할 수 있게
     useImperativeHandle(ref, () => ({
@@ -20,28 +22,25 @@ const ManageWeekeDetailed = forwardRef(
     useEffect(() => {
       if (weekData[selectedWeek]) {
         const assignments = weekData[selectedWeek].assignments || [];
-        setInputs(assignments.length > 0 ? assignments : [""]);
+        setInputs(assignments.length > 0 ? assignments : []);
       } else {
-        setInputs([""]);
+        setInputs([]);
       }
     }, [weekData, selectedWeek]);
 
     // 엔터 -> 과제 등록
-    const handleKeyPress = (index, event) => {
-      if (event.key === "Enter" && inputs.length < maxInputs) {
-        event.preventDefault();
-        const newInputs = [...inputs];
-        newInputs[index] = inputs[index];
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter' && studyName && inputs.length < maxInputs) {
+        e.preventDefault();
 
-        // 기본 상단 고정
-        const firstInputValue = newInputs[0];
-        newInputs[0] = "";
-        newInputs.push(firstInputValue);
+        const newInputs = [studyName, ...inputs]; 
+        if (newInputs.length > maxInputs) {
+          newInputs.pop(); 
+        }
 
         setInputs(newInputs);
         onWeekDataChange("assignments", newInputs);
-
-        console.log(newInputs);
+        setStudyName("");
       }
     };
 
@@ -63,16 +62,24 @@ const ManageWeekeDetailed = forwardRef(
       <Container>
         <Text2>{selectedWeek + 1}주차 과제 등록</Text2>
         <MainWrapper>
+          <InputWrapper>
+            <InputMainStudyName
+              placeholder="과제명을 입력해주세요"
+              value={studyName}
+              onChange={(e) => setStudyName(e.target.value)} // 사용자가 타이핑하면 상태 업데이트
+              onKeyDown={handleKeyPress} // 엔터키로 과제 등록
+            />
+          </InputWrapper>
+          
+          {/* 입력된 과제들 아래에 렌더링 */}
           {inputs.map((input, index) => (
-            <InputWrapper key={index} isFirst={index === 0}>
+            <InputWrapper key={index}>
               <InputStudyName
                 value={input}
-                onKeyDown={(e) => handleKeyPress(index, e)}
-                onChange={(e) => handleChange(index, e.target.value)}
+                onChange={(e) => handleChange(index, e.target.value)} // 과제명 변경
                 placeholder="과제명을 입력해주세요"
-                isFirst={index === 0}
               />
-              {index > 0 && (
+               {index >= 0 && (
                 <Icons
                   src={Delete}
                   alt="삭제"
@@ -84,12 +91,13 @@ const ManageWeekeDetailed = forwardRef(
         </MainWrapper>
       </Container>
     );
-  },
+  }
 );
 
 ManageWeekeDetailed.displayName = "ManageWeekeDetailed";
 
 export default ManageWeekeDetailed;
+
 
 
 
@@ -125,8 +133,8 @@ const InputWrapper = styled.div`
 const InputStudyName = styled.input`
   background: none;
   border: none;
-  border: ${(props) =>
-    props.isFirst ? "1px solid #A2A3B2" : "1px solid #8E59FF"};
+  border: 1px solid #8E59FF;
+
   border-radius: 0.5em;
   outline: none;
   height: 2.5em;
@@ -142,8 +150,7 @@ const InputStudyName = styled.input`
 const InputMainStudyName = styled.input`
   background: none;
   border: none;
-  border: ${(props) =>
-    props.isFirst ? "1px solid #A2A3B2" : "1px solid #8E59FF"};
+  border: 1px solid #A2A3B2;
   border-radius: 0.5em;
   outline: none;
   height: 2.5em;
