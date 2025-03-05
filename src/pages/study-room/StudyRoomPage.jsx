@@ -35,13 +35,15 @@ const StudyRoomPage = () => {
       state: { roomId, isWriter, studyName: studyInfo.name },
     });
   };
-  const handleManageClick = () => {
-    navigate("/study/manage", { state: { roomId, weeks } });
+  const handleManage = () => {
+    navigate("/study/manage-week", {
+      state: { roomId, studyInfo, weeks },
+    });
   };
 
   function calculateWeek(start, end) {
-    const startDate = new Data(start);
-    const endDate = new Data(end);
+    const startDate = new Date(start);
+    const endDate = new Date(end);
     const diffInMs = endDate - startDate;
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
     return Math.ceil(diffInDays / 7);
@@ -61,7 +63,6 @@ const StudyRoomPage = () => {
           roomData.studyStartTime,
           roomData.studyEndTime,
         );
-        console.log(weeksData);
         if (weeksData) setWeeks(weeksData);
 
         const noticeData = await studyFirstNoticeAPI(roomId);
@@ -107,6 +108,7 @@ const StudyRoomPage = () => {
         weeks={weeks}
         isWriter={isWriter}
         setCurrentWeek={setCurrentWeek}
+        onClick={handleManage}
       />
       <ContentWrapper>
         <MainContent>
@@ -120,9 +122,7 @@ const StudyRoomPage = () => {
           <WeekMyProgress weekInfo={weekInfo} taskList={taskList} />
         </MainContent>
       </ContentWrapper>
-      <div onClick={handleManageClick}>
-        {isWriter && <MobileManageButton />}
-      </div>
+      <div onClick={handleManage}>{isWriter && <MobileManageButton />}</div>
     </>
   );
 };
