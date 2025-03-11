@@ -1,61 +1,51 @@
 import React, {
   useState,
+  useEffect,
   forwardRef,
   useImperativeHandle,
-  useEffect,
 } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { setWeekData } from "../../../redux/slice/studymanageweek/studymanageweekSlice";
 import Delete from "../../../assets/icons/studyManageWeek/StudyManageWeekDelete.png";
 
-
 const ManageWeekeDetailed = forwardRef(
-  ({ selectedWeek, weekData = [], onWeekDataChange }, ref) => {
-    const [inputs, setInputs] = useState([]);
-    const maxInputs = 5; // 최대 5개까지 과제 입력
-    const [studyName, setStudyName] = useState(''); // 입력한 과제명을 저장할 상태
+  ({ selectedWeek, onWeekDataChange, weekData }, ref) => {
+    const [studyName, setStudyName] = useState("");
+    const [localAssignments, setLocalAssignments] = useState([]);
 
-    // 부모 컴포넌트에서 배열 참조할 수 있게
-    useImperativeHandle(ref, () => ({
-      getAssignments: () => inputs,
-    }));
-
+    // localStorage에서 과제 데이터를 불러오기
     useEffect(() => {
-      if (weekData[selectedWeek]) {
-        const assignments = weekData[selectedWeek].assignments || [];
-        setInputs(assignments.length > 0 ? assignments : []);
-      } else {
-        setInputs([]);
-      }
-    }, [weekData, selectedWeek]);
+      const savedAssignments = JSON.parse(localStorage.getItem(`assignments-${selectedWeek}`)) || [];
+      setLocalAssignments(savedAssignments); // 저장된 과제 데이터를 상태로 설정
+    }, [selectedWeek]);
 
-    // 엔터 -> 과제 등록
+    // 과제 추가
+    // const handleKeyPress = (e) => {
+    //   if (e.key === "Enter" && studyName) {
+    //     e.preventDefault();
+    //     const newAssignments = [...localAssignments, studyName];
+    //     setLocalAssignments(newAssignments); // 상태 업데이트
+    //     localStorage.setItem(`assignments-${selectedWeek}`, JSON.stringify(newAssignments)); // localStorage에 저장
+    //     onWeekDataChange("assignments", newAssignments); // parent에 과제 변경 전달
+    //     setStudyName(""); // 입력 필드 초기화
+    //   }
+    // };
     const handleKeyPress = (e) => {
-      if (e.key === 'Enter' && studyName && inputs.length < maxInputs) {
+      if (e.key === "Enter" && studyName) {
         e.preventDefault();
-
-        const newInputs = [studyName, ...inputs]; 
-        if (newInputs.length > maxInputs) {
-          newInputs.pop(); 
-        }
-
-        setInputs(newInputs);
-        onWeekDataChange("assignments", newInputs);
+        const newAssignments = [...localAssignments, { assignmentId: null, name: studyName }];
+        setLocalAssignments(newAssignments);
+        onWeekDataChange("assignments", newAssignments);
         setStudyName("");
       }
     };
-
     // 과제 삭제
     const handleDeleteInput = (index) => {
-      const newInputs = inputs.filter((_, i) => i !== index);
-      setInputs(newInputs);
-      onWeekDataChange("assignments", newInputs);
-    };
-
-    const handleChange = (index, value) => {
-      const newInputs = [...inputs];
-      newInputs[index] = value;
-      setInputs(newInputs);
-      onWeekDataChange("assignments", newInputs);
+      const newAssignments = localAssignments.filter((_, i) => i !== index);
+      setLocalAssignments(newAssignments); // 상태 업데이트
+      localStorage.setItem(`assignments-${selectedWeek}`, JSON.stringify(newAssignments)); // localStorage에 저장
+      onWeekDataChange("assignments", newAssignments); // parent에 변경된 과제 전달
     };
 
     return (
@@ -66,28 +56,19 @@ const ManageWeekeDetailed = forwardRef(
             <InputMainStudyName
               placeholder="과제명을 입력해주세요"
               value={studyName}
-              onChange={(e) => setStudyName(e.target.value)} // 사용자가 타이핑하면 상태 업데이트
-              onKeyDown={handleKeyPress} // 엔터키로 과제 등록
+              onChange={(e) => setStudyName(e.target.value)}
+              onKeyDown={handleKeyPress}
             />
           </InputWrapper>
-          
-          {/* 입력된 과제들 아래에 렌더링 */}
-          {inputs.map((input, index) => (
+
+          {/* 입력/저장된 과제들 아래에 렌더링 */}
+          {localAssignments.map((input, index) => (
             <InputWrapper key={index}>
-              <InputStudyName
-                value={input}
-                onChange={(e) => handleChange(index, e.target.value)} // 과제명 변경
-                placeholder="과제명을 입력해주세요"
-              />
-               {index >= 0 && (
-                <Icons
-                  src={Delete}
-                  alt="삭제"
-                  onClick={() => handleDeleteInput(index)}
-                />
-              )}
+              <InputStudyName value={input.name} readOnly />
+              <Icons src={Delete} alt="삭제" onClick={() => handleDeleteInput(index)} />
             </InputWrapper>
           ))}
+
         </MainWrapper>
       </Container>
     );
@@ -95,11 +76,7 @@ const ManageWeekeDetailed = forwardRef(
 );
 
 ManageWeekeDetailed.displayName = "ManageWeekeDetailed";
-
 export default ManageWeekeDetailed;
-
-
-
 
 const MainWrapper = styled.div`
   background-color: #fbfaff;
