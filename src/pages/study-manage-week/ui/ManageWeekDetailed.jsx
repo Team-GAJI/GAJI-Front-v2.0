@@ -1,104 +1,102 @@
 import React, {
   useState,
+  useEffect,
   forwardRef,
   useImperativeHandle,
-  useEffect,
 } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { setWeekData } from "../../../redux/slice/studymanageweek/studymanageweekSlice";
 import Delete from "../../../assets/icons/studyManageWeek/StudyManageWeekDelete.png";
 
 
-const ManageWeekeDetailed = forwardRef(
-  ({ selectedWeek, weekData = [], onWeekDataChange }, ref) => {
-    const [inputs, setInputs] = useState([]);
-    const maxInputs = 5; // 최대 5개까지 과제 입력
-    const [studyName, setStudyName] = useState(''); // 입력한 과제명을 저장할 상태
+const MAX_ASSIGNMENTS = 5; // 과제 5개만 하라고..예전에 말씀하셨는데 다시 확인해보기
 
-    // 부모 컴포넌트에서 배열 참조할 수 있게
-    useImperativeHandle(ref, () => ({
-      getAssignments: () => inputs,
-    }));
+const ManageWeekeDetailed = forwardRef(({ roomId, selectedWeek, onWeekDataChange, weekData }, ref) => {
+  const dispatch = useDispatch();
+  
 
-    useEffect(() => {
-      if (weekData[selectedWeek]) {
-        const assignments = weekData[selectedWeek].assignments || [];
-        setInputs(assignments.length > 0 ? assignments : []);
-      } else {
-        setInputs([]);
+  const assignmentsFromRedux = useSelector((state) => 
+    state.studyWeek.weeksData[roomId]?.[selectedWeek]?.assignments || []
+  );
+
+  const [studyName, setStudyName] = useState("");
+  const [localAssignments, setLocalAssignments] = useState([]);
+
+  useEffect(() => {
+    if (!roomId) return; // roomId와 상관없이 모든 과제가 동일하게 나옴 -> 수저함함
+
+    const storageKey = `assignments-${roomId}-${selectedWeek}`;
+    const savedAssignments = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    if (assignmentsFromRedux.length === 0 && savedAssignments.length > 0) {
+      dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: savedAssignments } }));
+    }
+
+    setLocalAssignments(savedAssignments); 
+  }, [roomId, selectedWeek, dispatch]);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && studyName.trim() !== "") {
+      e.preventDefault();
+
+      
+      if (localAssignments.length >= MAX_ASSIGNMENTS) {
+        alert("최대 5개의 과제만 저장할 수 있습니다.");
+        return;
       }
-    }, [weekData, selectedWeek]);
 
-    // 엔터 -> 과제 등록
-    const handleKeyPress = (e) => {
-      if (e.key === 'Enter' && studyName && inputs.length < maxInputs) {
-        e.preventDefault();
+      const newAssignment = { assignmentId: null, name: studyName };
 
-        const newInputs = [studyName, ...inputs]; 
-        if (newInputs.length > maxInputs) {
-          newInputs.pop(); 
-        }
+      const updatedAssignments = [...localAssignments, newAssignment];
 
-        setInputs(newInputs);
-        onWeekDataChange("assignments", newInputs);
-        setStudyName("");
-      }
-    };
+      setLocalAssignments(updatedAssignments);
+      localStorage.setItem(`assignments-${roomId}-${selectedWeek}`, JSON.stringify(updatedAssignments));
 
-    // 과제 삭제
-    const handleDeleteInput = (index) => {
-      const newInputs = inputs.filter((_, i) => i !== index);
-      setInputs(newInputs);
-      onWeekDataChange("assignments", newInputs);
-    };
+      dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: updatedAssignments } }));
+      onWeekDataChange("assignments", updatedAssignments);
+      setStudyName("");
+    }
+  };
 
-    const handleChange = (index, value) => {
-      const newInputs = [...inputs];
-      newInputs[index] = value;
-      setInputs(newInputs);
-      onWeekDataChange("assignments", newInputs);
-    };
+  // 과제 삭제 -> 나중에 API 
+  const handleDeleteInput = (index) => {
+    const newAssignments = localAssignments.filter((_, i) => i !== index);
+    setLocalAssignments(newAssignments);
+    localStorage.setItem(`assignments-${roomId}-${selectedWeek}`, JSON.stringify(newAssignments));
 
-    return (
-      <Container>
-        <Text2>{selectedWeek + 1}주차 과제 등록</Text2>
-        <MainWrapper>
-          <InputWrapper>
-            <InputMainStudyName
-              placeholder="과제명을 입력해주세요"
-              value={studyName}
-              onChange={(e) => setStudyName(e.target.value)} // 사용자가 타이핑하면 상태 업데이트
-              onKeyDown={handleKeyPress} // 엔터키로 과제 등록
-            />
+    dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: newAssignments } }));
+    onWeekDataChange("assignments", newAssignments);
+  };
+
+  return (
+    <Container>
+      <Text2>{selectedWeek + 1}주차 과제 등록</Text2>
+      <MainWrapper>
+        <InputWrapper>
+          <InputMainStudyName
+            placeholder="과제명을 입력해주세요"
+            value={studyName}
+            onChange={(e) => setStudyName(e.target.value)}
+            onKeyDown={handleKeyPress}
+            disabled={localAssignments.length >= MAX_ASSIGNMENTS} 
+          />
+        </InputWrapper>
+
+        {/* 저장/입력된 과제 최대 5개까지 렌더링 */}
+        {localAssignments.slice(0, MAX_ASSIGNMENTS).map((input, index) => (
+          <InputWrapper key={index}>
+            <InputStudyName value={input.name} readOnly />
+            <Icons src={Delete} alt="삭제" onClick={() => handleDeleteInput(index)} />
           </InputWrapper>
-          
-          {/* 입력된 과제들 아래에 렌더링 */}
-          {inputs.map((input, index) => (
-            <InputWrapper key={index}>
-              <InputStudyName
-                value={input}
-                onChange={(e) => handleChange(index, e.target.value)} // 과제명 변경
-                placeholder="과제명을 입력해주세요"
-              />
-               {index >= 0 && (
-                <Icons
-                  src={Delete}
-                  alt="삭제"
-                  onClick={() => handleDeleteInput(index)}
-                />
-              )}
-            </InputWrapper>
-          ))}
-        </MainWrapper>
-      </Container>
-    );
-  }
-);
+        ))}
+      </MainWrapper>
+    </Container>
+  );
+});
 
 ManageWeekeDetailed.displayName = "ManageWeekeDetailed";
-
 export default ManageWeekeDetailed;
-
-
 
 
 const MainWrapper = styled.div`

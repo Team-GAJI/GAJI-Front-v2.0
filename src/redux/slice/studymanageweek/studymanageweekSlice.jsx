@@ -14,26 +14,29 @@ const studyWeekSlice = createSlice({
   reducers: {
     setWeekData: (state, action) => {
       const { weekIndex, weekData } = action.payload;
-
-      // 주차 데이터 초기화
+    
       if (!state.weeksData[weekIndex]) {
         state.weeksData[weekIndex] = {
-          basicInfo: { name: "", description: "" },
+          basicInfo: { title: "", description: "" },
           tasks: [],
           studyPeriodStartDate: null,
           studyPeriodEndDate: null,
-          assignments: [], // 초기값
+          assignments: [],
         };
       }
-
-      // 주차 데이터 업데이트
+    
+      // 기존 과제(assignmentId 있는 것)와 새로운 과제(assignmentId 없는 것) 구분 후 병합
+      const existingAssignments = state.weeksData[weekIndex].assignments.filter(a => a.assignmentId);
+      const newAssignments = weekData.assignments.filter(a => !a.assignmentId);
+    
       state.weeksData[weekIndex] = {
-        ...state.weeksData[weekIndex], // 기존 데이터 유지
-        ...weekData, // 새로운 데이터로 업데이트
-        assignments:
-          weekData.assignments || state.weeksData[weekIndex].assignments,
+        ...state.weeksData[weekIndex], 
+        ...weekData,
+        assignments: weekData.assignments,
+        // assignments: [...existingAssignments, ...newAssignments], // 기존 과제 유지 + 새 과제 추가
       };
     },
+    
 
     deleteWeekData: (state, action) => {
       const { weekIndex } = action.payload;

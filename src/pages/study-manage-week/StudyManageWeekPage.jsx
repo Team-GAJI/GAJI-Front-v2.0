@@ -35,13 +35,10 @@ const StudyManageWeekPage = () => {
   const navigate = useNavigate();
   const { weeksData = [] } = useSelector((state) => state.studyWeek);
   const [selectedWeek, setSelectedWeek] = useState(0);
-  // const roomId = location.state?.roomId || null;
   
   const location = useLocation();
   const roomId = location.state?.roomId;
   const weekCount = location.state?.weeks; //주차 받아오기
-  // console.log(roomId);
-  // console.log("내가 선택한 주차 weeks",selectedWeek);
 
   useEffect(() => {
     console.log("roomId:", roomId);
@@ -62,7 +59,7 @@ const StudyManageWeekPage = () => {
     if (weeksData.length === 0) {
       const initialWeekData = [
         {
-          basicInfo: { title: "1주차", description: "" },
+          basicInfo: { title: "", description: "" },
           tasks: [],
           studyPeriodStartDate: null,
           studyPeriodEndDate: null,
@@ -77,87 +74,70 @@ const StudyManageWeekPage = () => {
 
   const handleSave = useCallback(async () => {
     const currentWeekData = weeksData[selectedWeek];
-    alert("저장완료"); // -> 서버에 전송 후에 저장하기 나오게...
+  
     if (!currentWeekData) {
       console.error("현재 주차 데이터가 없습니다.");
       return;
     }
-
-    // 이름 및 설명
-    const weekInfo = {
-      title: currentWeekData.basicInfo.title,
-      description: currentWeekData.basicInfo.description,
-    };
-    
-    
-    // 날짜 -1 수정 -> 네트워크 창에는 잘 전송되는 거 확인가능/ 콘솔창에서는 X -> 수정(급x)
-    let studyPeriodStartDate = new Date(currentWeekData.studyPeriodStartDate);
-    let studyPeriodEndDate = new Date(currentWeekData.studyPeriodEndDate);
-    
-    // 날짜가 제대로 설정되었는지 확인하고 하루를 추가
-    studyPeriodStartDate.setDate(studyPeriodStartDate.getDate() + 1);
-    studyPeriodEndDate.setDate(studyPeriodEndDate.getDate() + 1); 
-    const periodInfo = {
-      studyPeriodStartDate: studyPeriodStartDate.toISOString(),
-      studyPeriodEndDate: studyPeriodEndDate.toISOString(),
-    };
-
-    // 과제 등록
-    const assignmentsInfo = {
-      assignments: currentWeekData.assignments || [],
-    };
   
-    // 시작일과 종료일이 유효한지 확인
-    if (!periodInfo.studyPeriodStartDate || !periodInfo.studyPeriodEndDate) {
-      console.error("스터디 기간 정보가 누락되었습니다.");
-      return;
-    }
-
+    const assignments = currentWeekData.assignments || [];
+  
+    const existingAssignments = assignments.filter(a => a.assignmentId);
+    const newAssignments = assignments.filter(a => !a.assignmentId);
+  
     try {
-      // descriptionAPI 호출
-      const descriptionResult = await descriptionAPI(
-        roomId,
-        selectedWeek+1,
-        weekInfo,
-      );
-      console.log("설명 저장 완료:", descriptionResult);
-
-      // periodAPI 호출
-      const periodResult = await periodAPI(roomId, selectedWeek+1, periodInfo);
-      console.log("스터디 기한 저장 완료:", periodResult);
-
-      //assignmentsAPI 호출
-      if (assignmentsInfo.assignments.length > 0) {
-        const assignmentsResult = await assignmentsAPI(
+      await descriptionAPI(roomId, selectedWeek + 1, {
+        title: currentWeekData.basicInfo.title,
+        description: currentWeekData.basicInfo.description,
+      });
+  
+      await periodAPI(roomId, selectedWeek + 1, {
+        studyPeriodStartDate: currentWeekData.studyPeriodStartDate,
+        studyPeriodEndDate: currentWeekData.studyPeriodEndDate,
+      });
+  
+      for (const assignment of existingAssignments) {
+        await assignmentsUpdateAPI(
           roomId,
-          selectedWeek+1,
-          assignmentsInfo,
+          selectedWeek + 1,
+          { name: assignment.name },
+          assignment.assignmentId,
         );
-        console.log("등록한 과제 : ", assignmentsResult);
-      } else {
-        console.warn("과제가 비어 있습니다.");
       }
-      // 저장하기 버튼을 누르면 새로운 id로 계속 나옴 -> 수정해야함
-
-      //assignmentsUpdateAPI 호출 -> 등록한 과제에서 변경한 내용이 있다면 
-      // if (JSON.stringify(assignmentsInfo.assignments) !== JSON.stringify(assignments)) {
-      //   console.log("과제변경 저장");
-      //     const updateResult = await assignmentsUpdateAPI(
-      //       roomId,
-      //       selectedWeek + 1,
-      //       assignments, // 변경된 과제 내용 -> 선언X -> 수정
-      //   );
-      //   console.log("과제 업데이트 결과 : ", updateResult);
-      // }
-    
+  
+      // 처음 저장할때  assignmentsAPI 호출 -> 수정후 새로운 과제를 저장해도 호출되는데 새로운 ID를 부여해서 오류 나옴옴
+      let savedNewAssignments = [];
+      if (newAssignments.length > 0) {
+        const response = await assignmentsAPI(roomId, selectedWeek + 1, {
+          bodyList: newAssignments.map(a => a.name),
+        });
+  
+        savedNewAssignments = response.assignmentIds.map((id, idx) => ({
+          assignmentId: id,
+          name: newAssignments[idx].name,
+        }));
+      }
+  
+     
+      const updatedAssignments = [...existingAssignments, ...savedNewAssignments];
+  
+      dispatch(
+        setWeekData({
+          weekIndex: selectedWeek,
+          weekData: {
+            ...currentWeekData,
+            assignments: updatedAssignments,
+          },
+        }),
+      );
+  
     } catch (error) {
       console.error("저장 중 오류 발생:", error);
     }
-  }, [roomId, selectedWeek, weeksData]);
-
-  // 수정 한 저장버튼
+  }, [roomId, selectedWeek, weeksData, dispatch]);
   
-
+  
+  
   const handleWeekDataChange = (field, value) => {
     const currentWeekData = weeksData[selectedWeek] || {
       basicInfo: { title: "", description: "" },
@@ -178,7 +158,7 @@ const StudyManageWeekPage = () => {
       ...(field === "studyPeriodStartDate" && { studyPeriodStartDate: value }),      
       ...(field === "studyPeriodEndDate" && { studyPeriodEndDate: value }),
       // 과제 업데이트 -> 0부터 시작
-      ...(field === "assignments" && { assignments: value }), // assignments 업데이트 추가
+      ...(field === "assignments" && { assignments: value }), 
 
       // assignments: field === 'assignments' ? value : currentWeekData.assignments,
     };
