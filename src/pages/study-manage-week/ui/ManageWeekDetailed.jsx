@@ -9,74 +9,95 @@ import styled from "styled-components";
 import { setWeekData } from "../../../redux/slice/studymanageweek/studymanageweekSlice";
 import Delete from "../../../assets/icons/studyManageWeek/StudyManageWeekDelete.png";
 
-const ManageWeekeDetailed = forwardRef(
-  ({ selectedWeek, onWeekDataChange, weekData }, ref) => {
-    const [studyName, setStudyName] = useState("");
-    const [localAssignments, setLocalAssignments] = useState([]);
 
-    // localStorage에서 과제 데이터를 불러오기
-    useEffect(() => {
-      const savedAssignments = JSON.parse(localStorage.getItem(`assignments-${selectedWeek}`)) || [];
-      setLocalAssignments(savedAssignments); // 저장된 과제 데이터를 상태로 설정
-    }, [selectedWeek]);
+const MAX_ASSIGNMENTS = 5; // 과제 5개만 하라고..예전에 말씀하셨는데 다시 확인해보기
 
-    // 과제 추가
-    // const handleKeyPress = (e) => {
-    //   if (e.key === "Enter" && studyName) {
-    //     e.preventDefault();
-    //     const newAssignments = [...localAssignments, studyName];
-    //     setLocalAssignments(newAssignments); // 상태 업데이트
-    //     localStorage.setItem(`assignments-${selectedWeek}`, JSON.stringify(newAssignments)); // localStorage에 저장
-    //     onWeekDataChange("assignments", newAssignments); // parent에 과제 변경 전달
-    //     setStudyName(""); // 입력 필드 초기화
-    //   }
-    // };
-    const handleKeyPress = (e) => {
-      if (e.key === "Enter" && studyName) {
-        e.preventDefault();
-        const newAssignments = [...localAssignments, { assignmentId: null, name: studyName }];
-        setLocalAssignments(newAssignments);
-        onWeekDataChange("assignments", newAssignments);
-        setStudyName("");
+const ManageWeekeDetailed = forwardRef(({ roomId, selectedWeek, onWeekDataChange, weekData }, ref) => {
+  const dispatch = useDispatch();
+  
+
+  const assignmentsFromRedux = useSelector((state) => 
+    state.studyWeek.weeksData[roomId]?.[selectedWeek]?.assignments || []
+  );
+
+  const [studyName, setStudyName] = useState("");
+  const [localAssignments, setLocalAssignments] = useState([]);
+
+  useEffect(() => {
+    if (!roomId) return; // roomId와 상관없이 모든 과제가 동일하게 나옴 -> 수저함함
+
+    const storageKey = `assignments-${roomId}-${selectedWeek}`;
+    const savedAssignments = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    if (assignmentsFromRedux.length === 0 && savedAssignments.length > 0) {
+      dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: savedAssignments } }));
+    }
+
+    setLocalAssignments(savedAssignments); 
+  }, [roomId, selectedWeek, dispatch]);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && studyName.trim() !== "") {
+      e.preventDefault();
+
+      
+      if (localAssignments.length >= MAX_ASSIGNMENTS) {
+        alert("최대 5개의 과제만 저장할 수 있습니다.");
+        return;
       }
-    };
-    // 과제 삭제
-    const handleDeleteInput = (index) => {
-      const newAssignments = localAssignments.filter((_, i) => i !== index);
-      setLocalAssignments(newAssignments); // 상태 업데이트
-      localStorage.setItem(`assignments-${selectedWeek}`, JSON.stringify(newAssignments)); // localStorage에 저장
-      onWeekDataChange("assignments", newAssignments); // parent에 변경된 과제 전달
-    };
 
-    return (
-      <Container>
-        <Text2>{selectedWeek + 1}주차 과제 등록</Text2>
-        <MainWrapper>
-          <InputWrapper>
-            <InputMainStudyName
-              placeholder="과제명을 입력해주세요"
-              value={studyName}
-              onChange={(e) => setStudyName(e.target.value)}
-              onKeyDown={handleKeyPress}
-            />
+      const newAssignment = { assignmentId: null, name: studyName };
+
+      const updatedAssignments = [...localAssignments, newAssignment];
+
+      setLocalAssignments(updatedAssignments);
+      localStorage.setItem(`assignments-${roomId}-${selectedWeek}`, JSON.stringify(updatedAssignments));
+
+      dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: updatedAssignments } }));
+      onWeekDataChange("assignments", updatedAssignments);
+      setStudyName("");
+    }
+  };
+
+  // 과제 삭제 -> 나중에 API 
+  const handleDeleteInput = (index) => {
+    const newAssignments = localAssignments.filter((_, i) => i !== index);
+    setLocalAssignments(newAssignments);
+    localStorage.setItem(`assignments-${roomId}-${selectedWeek}`, JSON.stringify(newAssignments));
+
+    dispatch(setWeekData({ roomId, weekIndex: selectedWeek, weekData: { assignments: newAssignments } }));
+    onWeekDataChange("assignments", newAssignments);
+  };
+
+  return (
+    <Container>
+      <Text2>{selectedWeek + 1}주차 과제 등록</Text2>
+      <MainWrapper>
+        <InputWrapper>
+          <InputMainStudyName
+            placeholder="과제명을 입력해주세요"
+            value={studyName}
+            onChange={(e) => setStudyName(e.target.value)}
+            onKeyDown={handleKeyPress}
+            disabled={localAssignments.length >= MAX_ASSIGNMENTS} 
+          />
+        </InputWrapper>
+
+        {/* 저장/입력된 과제 최대 5개까지 렌더링 */}
+        {localAssignments.slice(0, MAX_ASSIGNMENTS).map((input, index) => (
+          <InputWrapper key={index}>
+            <InputStudyName value={input.name} readOnly />
+            <Icons src={Delete} alt="삭제" onClick={() => handleDeleteInput(index)} />
           </InputWrapper>
-
-          {/* 입력/저장된 과제들 아래에 렌더링 */}
-          {localAssignments.map((input, index) => (
-            <InputWrapper key={index}>
-              <InputStudyName value={input.name} readOnly />
-              <Icons src={Delete} alt="삭제" onClick={() => handleDeleteInput(index)} />
-            </InputWrapper>
-          ))}
-
-        </MainWrapper>
-      </Container>
-    );
-  }
-);
+        ))}
+      </MainWrapper>
+    </Container>
+  );
+});
 
 ManageWeekeDetailed.displayName = "ManageWeekeDetailed";
 export default ManageWeekeDetailed;
+
 
 const MainWrapper = styled.div`
   background-color: #fbfaff;

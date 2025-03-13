@@ -30,9 +30,9 @@ const studyWeekSlice = createSlice({
       const newAssignments = weekData.assignments.filter(a => !a.assignmentId);
     
       state.weeksData[weekIndex] = {
-        ...state.weeksData[weekIndex], // 기존 데이터 유지
-        ...weekData, // 새로운 데이터 반영
-        assignments: weekData.assignments, // 완전 교체하여 항상 최신화
+        ...state.weeksData[weekIndex], 
+        ...weekData,
+        assignments: weekData.assignments,
         // assignments: [...existingAssignments, ...newAssignments], // 기존 과제 유지 + 새 과제 추가
       };
     },

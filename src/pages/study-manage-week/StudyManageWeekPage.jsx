@@ -35,13 +35,10 @@ const StudyManageWeekPage = () => {
   const navigate = useNavigate();
   const { weeksData = [] } = useSelector((state) => state.studyWeek);
   const [selectedWeek, setSelectedWeek] = useState(0);
-  // const roomId = location.state?.roomId || null;
   
   const location = useLocation();
   const roomId = location.state?.roomId;
   const weekCount = location.state?.weeks; //주차 받아오기
-  // console.log(roomId);
-  // console.log("내가 선택한 주차 weeks",selectedWeek);
 
   useEffect(() => {
     console.log("roomId:", roomId);
@@ -62,7 +59,7 @@ const StudyManageWeekPage = () => {
     if (weeksData.length === 0) {
       const initialWeekData = [
         {
-          basicInfo: { title: "1주차", description: "" },
+          basicInfo: { title: "", description: "" },
           tasks: [],
           studyPeriodStartDate: null,
           studyPeriodEndDate: null,
@@ -85,7 +82,6 @@ const StudyManageWeekPage = () => {
   
     const assignments = currentWeekData.assignments || [];
   
-    // 명확히 기존 과제와 신규 과제 구분
     const existingAssignments = assignments.filter(a => a.assignmentId);
     const newAssignments = assignments.filter(a => !a.assignmentId);
   
@@ -100,7 +96,6 @@ const StudyManageWeekPage = () => {
         studyPeriodEndDate: currentWeekData.studyPeriodEndDate,
       });
   
-      // **중요**: 기존 과제 반드시 assignmentId가 있어야 업데이트 가능
       for (const assignment of existingAssignments) {
         await assignmentsUpdateAPI(
           roomId,
@@ -110,7 +105,7 @@ const StudyManageWeekPage = () => {
         );
       }
   
-      // **중요**: 신규 과제만 assignmentsAPI 호출
+      // 처음 저장할때  assignmentsAPI 호출 -> 수정후 새로운 과제를 저장해도 호출되는데 새로운 ID를 부여해서 오류 나옴옴
       let savedNewAssignments = [];
       if (newAssignments.length > 0) {
         const response = await assignmentsAPI(roomId, selectedWeek + 1, {
@@ -123,7 +118,7 @@ const StudyManageWeekPage = () => {
         }));
       }
   
-      // 최종적으로 Redux 업데이트
+     
       const updatedAssignments = [...existingAssignments, ...savedNewAssignments];
   
       dispatch(
@@ -142,86 +137,6 @@ const StudyManageWeekPage = () => {
   }, [roomId, selectedWeek, weeksData, dispatch]);
   
   
-
-  // const handleSave = useCallback(async () => {
-  //   const currentWeekData = weeksData[selectedWeek];
-  
-  //   if (!currentWeekData) {
-  //     console.error("현재 주차 데이터가 없습니다.");
-  //     return;
-  //   }
-  
-  //   const assignments = currentWeekData.assignments || [];
-  
-  //   // 정확한 assignmentId가 있는지 명확히 확인
-  //   const existingAssignments = assignments.filter(
-  //     (a) => typeof a === "object" && a.assignmentId
-  //   );
-  
-  //   // 신규 과제는 반드시 객체와 문자열을 구분하여 명확히 처리
-  //   const newAssignments = assignments.filter(
-  //     (a) => typeof a === "string" || (typeof a === "object" && !a.assignmentId)
-  //   );
-  
-  //   try {
-  //     await descriptionAPI(roomId, selectedWeek + 1, {
-  //       title: currentWeekData.basicInfo.title,
-  //       description: currentWeekData.basicInfo.description,
-  //     });
-  
-  //     await periodAPI(roomId, selectedWeek + 1, {
-  //       studyPeriodStartDate: currentWeekData.studyPeriodStartDate,
-  //       studyPeriodEndDate: currentWeekData.studyPeriodEndDate,
-  //     });
-  
-  //     // 기존 과제 업데이트 (assignmentId 유지)
-  //     for (const assignment of existingAssignments) {
-  //       await assignmentsUpdateAPI(
-  //         roomId,
-  //         selectedWeek + 1,
-  //         { name: assignment.name },
-  //         assignment.assignmentId
-  //       );
-  //     }
-  
-  //     // 신규 과제 처리
-  //     let savedNewAssignments = [];
-  //     if (newAssignments.length > 0) {
-  //       // 객체와 문자열을 명확히 처리
-  //       const formattedAssignments = newAssignments.map((a) =>
-  //         typeof a === "string" ? a : a.name
-  //       );
-  
-  //       console.log("서버에 전송할 과제 목록:", formattedAssignments);
-  
-  //       const response = await assignmentsAPI(roomId, selectedWeek + 1, {
-  //         bodyList: formattedAssignments,
-  //       });
-  
-  //       savedNewAssignments = response.assignmentIds.map((id, idx) => ({
-  //         assignmentId: id,
-  //         name: formattedAssignments[idx],
-  //       }));
-  //     }
-  
-  //     const updatedAssignments = [
-  //       ...existingAssignments,
-  //       ...savedNewAssignments,
-  //     ];
-  
-  //     dispatch(
-  //       setWeekData({
-  //         weekIndex: selectedWeek,
-  //         weekData: {
-  //           ...currentWeekData,
-  //           assignments: updatedAssignments,
-  //         },
-  //       })
-  //     );
-  //   } catch (error) {
-  //     console.error("저장 중 오류 발생:", error);
-  //   }
-  // }, [roomId, selectedWeek, weeksData, dispatch]);
   
   const handleWeekDataChange = (field, value) => {
     const currentWeekData = weeksData[selectedWeek] || {
