@@ -4,9 +4,9 @@ export const getUserPostAPI = async (userId, type, cursorDate, size = 10) => {
   try {
     const response = await api.get(`users/posts/${userId}`, {
       params: {
-        type: type,
-        cursorDate: cursorDate, // 문자열 형식의 날짜
-        size: size,
+        type,
+        cursorDate, // 문자열 형식의 날짜
+        size,
       },
     });
 
