@@ -153,6 +153,7 @@ const Header = styled.div`
 `;
 
 const PostRouteButton = styled.div`
+  cursor: pointer;
   box-sizing: border-box;
   font-weight: 400;
   display: flex;

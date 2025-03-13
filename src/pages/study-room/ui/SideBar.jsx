@@ -66,6 +66,7 @@ const SidebarContainer = styled.div`
 `;
 
 const SidebarManageButton = styled.button`
+  cursor: pointer;
   background-color: #8e59ff;
   border: 0.0625em solid #8e59ff;
   color: #fff;
